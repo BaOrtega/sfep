@@ -57,8 +57,9 @@ class ClienteController extends BaseController
         $data['cliente'] = $cliente;
         $data['title'] = "Editar Cliente";
         
+        
         // Muestra la vista del formulario (precargado con datos)
-        return view('clientes/form', $data);
+        return view('/clientes/form', $data);
     }
 
     // [DELETE] ELIMINAR

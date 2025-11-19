@@ -33,4 +33,6 @@ $routes->group('clientes', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'ClienteController::edit/$1');
     // Eliminar (DELETE)
     $routes->get('delete/(:num)', 'ClienteController::delete/$1');
+    // Cantidad de clientes
+    $routes->get('cantidadClientes', 'ClienteController::cantidadClientes');
 });

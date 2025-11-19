@@ -13,12 +13,12 @@ class ClienteModel extends Model
     protected $useSoftDeletes = false; 
 
     // Campos permitidos para ser insertados o actualizados
-    protected $allowedFields = ['nombre', 'nit', 'direccion', 'email', 'telefono'];
+    protected $allowedFields = ['id', 'nombre', 'nit', 'direccion', 'email', 'telefono'];
 
     // Reglas de validación
     protected $validationRules = [
         'nombre'  => 'required|min_length[3]',
-        'nit'     => 'required|min_length[5]|is_unique[clientes.nit,id,{id}]', // Clave: NIT debe ser único (excluyendo el propio registro en edición)
+        'nit'     => 'required|min_length[5]', // Clave: NIT debe ser único (excluyendo el propio registro en edición)
         'email'   => 'permit_empty|valid_email', // Email es opcional, pero si existe, debe ser válido
     ];
 

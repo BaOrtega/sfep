@@ -2,83 +2,346 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title><?= esc($title) ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= esc($title) ?> - PFEP</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        /* Estilos base (Mismos que Dashboard) */
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; }
-        .sidebar { width: 250px; height: 100vh; position: fixed; background-color: #343a40; color: white; padding: 20px; box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); }
-        .main-content { margin-left: 270px; padding: 20px; }
-        .logo { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; }
-        .nav-item a { color: white; text-decoration: none; display: block; padding: 10px 0; border-radius: 4px; transition: background-color 0.3s; }
-        .nav-item a:hover { background-color: #495057; }
-        /* Estilos específicos de la tabla y botones */
-        .btn { padding: 8px 15px; border-radius: 4px; text-decoration: none; margin-right: 5px; cursor: pointer; display: inline-block; }
-        .btn-success { background-color: #28a745; color: white; }
-        .btn-primary { background-color: #007bff; color: white; }
-        .btn-danger { background-color: #dc3545; color: white; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f8f9fa; }
-        .alert-success { background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            margin-left: 300px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .logo {
+            font-size: 1.8em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .nav-item a {
+            color: #495057;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .nav-item a:hover {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            transform: translateX(5px);
+        }
+        .nav-item a.active {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        .user-info {
+            position: absolute;
+            bottom: 30px;
+            width: calc(100% - 50px);
+        }
+        .card-main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            overflow: hidden;
+        }
+        .card-header-custom {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 25px;
+            border-bottom: none;
+        }
+        .btn-modern {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+        .btn-edit {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+        .btn-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+            color: white;
+        }
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+        .btn-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+        .table-modern {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .table-modern thead {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+        .table-modern th {
+            border: none;
+            padding: 15px;
+            font-weight: 600;
+            color: #495057;
+        }
+        .table-modern td {
+            border: none;
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+        }
+        .table-modern tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .alert-modern {
+            border-radius: 15px;
+            border: none;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">PFEP</div>
-        <hr style="border-color: #495057;">
+        <hr style="border-color: #e9ecef; margin: 20px 0;">
         <nav>
-            <div class="nav-item"><a href="<?= url_to('dashboard') ?>">🏠 Dashboard</a></div>
-            <div class="nav-item"><a href="/clientes" style="background-color: #495057;">👥 Clientes (CRUD)</a></div>
-            <div class="nav-item"><a href="/productos">📦 Productos (Inventario)</a></div>
-            <div class="nav-item"><a href="/facturas/nueva">🧾 Nueva Factura (CU-001)</a></div>
-            <div class="nav-item"><a href="/reportes">📊 Reportes y Análisis</a></div>
+            <div class="nav-item">
+                <a href="<?= url_to('dashboard') ?>">
+                    <i class="bi bi-house me-3"></i>Dashboard
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="<?= url_to('clientes') ?>" class="active">
+                    <i class="bi bi-people me-3"></i>Clientes
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/productos">
+                    <i class="bi bi-box-seam me-3"></i>Productos
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/facturas/nueva">
+                    <i class="bi bi-receipt me-3"></i>Nueva Factura
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/reportes">
+                    <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
+                </a>
+            </div>
         </nav>
-        <div style="position: absolute; bottom: 20px;">
-            <p style="font-size: 0.9em;">Usuario: <?= esc(session()->get('user_name')) ?></p>
-            <a href="<?= url_to('logout') ?>" class="btn btn-danger">Cerrar Sesión</a>
+        
+        <div class="user-info">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <p class="mb-1 fw-bold"><?= esc(session()->get('user_name')) ?></p>
+                    <small class="text-muted">Usuario activo</small>
+                </div>
+                <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <i class="bi bi-person"></i>
+                </div>
+            </div>
+            <a href="<?= url_to('logout') ?>" class="btn btn-outline-danger w-100">
+                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+            </a>
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
-        <h1><?= esc($title) ?></h1>
+        <div class="card-main">
+            <!-- Header -->
+            <div class="card-header-custom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-1"><i class="bi bi-people me-2"></i><?= esc($title) ?></h2>
+                        <p class="mb-0 opacity-75">Gestiona todos los clientes de tu empresa</p>
+                    </div>
+                    <a href="<?= url_to('clientes/new') ?>" class="btn-modern">
+                        <i class="bi bi-plus-circle"></i>Nuevo Cliente
+                    </a>
+                </div>
+            </div>
 
-        <a href="/clientes/new" class="btn btn-success" style="margin-bottom: 20px;">+ Nuevo Cliente</a>
+            <!-- Body -->
+            <div class="card-body p-4">
+                <!-- Alertas -->
+                <?php if (session()->getFlashdata('success')): ?>
+                    <div class="alert alert-success alert-modern alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <?= session()->getFlashdata('success') ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
 
-        <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert-success"><?= session()->getFlashdata('success') ?></div>
-        <?php endif; ?>
-        
-        <?php if (empty($clientes)): ?>
-            <p>Aún no hay clientes registrados.</p>
-        <?php else: ?>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>NIT/Cédula</th>
-                        <th>Email</th>
-                        <th>Teléfono</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($clientes as $cliente): ?>
-                        <tr>
-                            <td><?= esc($cliente['id']) ?></td>
-                            <td><?= esc($cliente['nombre']) ?></td>
-                            <td><?= esc($cliente['nit']) ?></td>
-                            <td><?= esc($cliente['email']) ?></td>
-                            <td><?= esc($cliente['telefono']) ?></td>
-                            <td>
-                                <a href="/clientes/edit/<?= esc($cliente['id']) ?>" class="btn btn-primary">Editar</a>
-                                <a href="/clientes/delete/<?= esc($cliente['id']) ?>" class="btn btn-danger" onclick="return confirm('¿Está seguro de eliminar este cliente?');">Eliminar</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php endif; ?>
+                <!-- Estadísticas -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="mb-0"><?= count($clientes) ?></h3>
+                                    <p class="mb-0">Total Clientes</p>
+                                </div>
+                                <i class="bi bi-people-fill fs-1 opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Clientes -->
+                <?php if (empty($clientes)): ?>
+                    <div class="empty-state">
+                        <i class="bi bi-people"></i>
+                        <h4>No hay clientes registrados</h4>
+                        <p class="text-muted">Comienza agregando tu primer cliente al sistema.</p>
+                        <a href="<?= url_to('clientes/new') ?>" class="btn-modern mt-3">
+                            <i class="bi bi-plus-circle"></i>Agregar Primer Cliente
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="table-responsive">
+                        <table class="table table-modern">
+                            <thead>
+                                <tr>
+                                    <th><i class="bi bi-person me-2"></i>Nombre</th>
+                                    <th><i class="bi bi-credit-card me-2"></i>NIT/Cédula</th>
+                                    <th><i class="bi bi-envelope me-2"></i>Email</th>
+                                    <th><i class="bi bi-telephone me-2"></i>Teléfono</th>
+                                    <th><i class="bi bi-gear me-2"></i>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($clientes as $cliente): ?>
+                                    <tr>
+                                        <td class="fw-semibold"><?= esc($cliente['nombre']) ?></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark"><?= esc($cliente['nit']) ?></span>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($cliente['email'])): ?>
+                                                <a href="mailto:<?= esc($cliente['email']) ?>" class="text-decoration-none">
+                                                    <?= esc($cliente['email']) ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">No especificado</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($cliente['telefono'])): ?>
+                                                <a href="tel:<?= esc($cliente['telefono']) ?>" class="text-decoration-none">
+                                                    <?= esc($cliente['telefono']) ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">No especificado</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="<?= base_url('clientes/edit/' . esc($cliente['id'])) ?>" class="btn-edit">
+                                                    <i class="bi bi-pencil"></i> Editar
+                                                </a>
+                                                <a href="<?= base_url('clientes/delete/' . esc($cliente['id'])) ?>" 
+                                                   class="btn-delete" 
+                                                   onclick="return confirm('¿Está seguro de eliminar este cliente?');">
+                                                    <i class="bi bi-trash"></i> Eliminar
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
