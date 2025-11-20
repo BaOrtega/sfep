@@ -201,12 +201,12 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('clientes') ?>" class="active">
+                <a href="<?= url_to('clientes') ?>">
                     <i class="bi bi-people me-3"></i>Clientes
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('productos') ?>">
+                <a href="<?= url_to('productos') ?>" class="active">
                     <i class="bi bi-box-seam me-3"></i>Productos
                 </a>
             </div>
@@ -241,8 +241,8 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- Botón Volver -->
-        <a href="<?= url_to('clientes') ?>" class="btn-back">
-            <i class="bi bi-arrow-left"></i>Volver a Clientes
+        <a href="<?= url_to('productos') ?>" class="btn-back">
+            <i class="bi bi-arrow-left"></i>Volver a Productos
         </a>
 
         <div class="card-main">
@@ -251,10 +251,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h2 class="mb-1">
-                            <i class="bi bi-person-plus me-2"></i><?= esc($title) ?>
+                            <i class="bi bi-<?= isset($producto) ? 'pencil' : 'plus-circle' ?> me-2"></i><?= esc($title) ?>
                         </h2>
                         <p class="mb-0 opacity-75">
-                            <?= isset($cliente) ? 'Actualiza la información del cliente' : 'Completa los datos para registrar un nuevo cliente' ?>
+                            <?= isset($producto) ? 'Actualiza la información del producto' : 'Completa los datos para registrar un nuevo producto' ?>
                         </p>
                     </div>
                     <div class="badge bg-light text-dark fs-6 p-3">
@@ -280,111 +280,134 @@
                     </div>
                 <?php endif; ?>
 
-                <form action="<?= url_to('clientes/save') ?>" method="post">
+                <form action="<?= base_url('productos/save') ?>" method="post">
                     <?= csrf_field() ?>
                     
                     <!-- Campo oculto para el ID si estamos editando -->
-                    <?php if (isset($cliente)): ?>
-                        <input type="hidden" name="id" value="<?= esc($cliente['id']) ?>">
+                    <?php if (isset($producto)): ?>
+                        <input type="hidden" name="id" value="<?= esc($producto['id']) ?>">
                     <?php endif; ?>
 
                     <!-- Sección Información Básica -->
                     <div class="form-section">
                         <h4 class="form-title">
-                            <i class="bi bi-person-vcard"></i>Información Básica
+                            <i class="bi bi-info-circle"></i>Información Básica
                         </h4>
                         
                         <div class="row">
-                            <!-- Nombre Completo -->
-                            <div class="col-md-6">
+                            <!-- Nombre del Producto -->
+                            <div class="col-md-12">
                                 <div class="form-floating">
                                     <input type="text" 
                                            class="form-control" 
                                            id="nombre" 
                                            name="nombre" 
-                                           value="<?= old('nombre', $cliente['nombre'] ?? '') ?>" 
-                                           placeholder="Juan Pérez"
+                                           value="<?= old('nombre', $producto['nombre'] ?? '') ?>" 
+                                           placeholder="Nombre del producto"
                                            required>
                                     <label for="nombre" class="required-field">
-                                        <i class="bi bi-person me-2"></i>Nombre Completo
+                                        <i class="bi bi-tag me-2"></i>Nombre del Producto
                                     </label>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- NIT/Cédula -->
+                        <!-- Descripción -->
+                        <div class="form-floating mt-3">
+                            <textarea class="form-control" 
+                                      id="descripcion" 
+                                      name="descripcion" 
+                                      placeholder="Descripción del producto"
+                                      style="height: 100px"><?= old('descripcion', $producto['descripcion'] ?? '') ?></textarea>
+                            <label for="descripcion">
+                                <i class="bi bi-text-paragraph me-2"></i>Descripción
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sección Precios y Costos -->
+                    <div class="form-section">
+                        <h4 class="form-title">
+                            <i class="bi bi-currency-dollar"></i>Información de Precios
+                        </h4>
+                        
+                        <div class="row">
+                            <!-- Precio de Venta -->
                             <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" 
+                                <label for="precio" class="form-label required-field">Precio de Venta</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
                                            class="form-control" 
-                                           id="nit" 
-                                           name="nit" 
-                                           value="<?= old('nit', $cliente['nit'] ?? '') ?>" 
-                                           placeholder="123456789"
+                                           id="precio" 
+                                           name="precio_unitario" 
+                                           step="0.01" 
+                                           value="<?= old('precio_unitario', $producto['precio_unitario'] ?? '') ?>" 
+                                           placeholder="0.00"
                                            required>
-                                    <label for="nit" class="required-field">
-                                        <i class="bi bi-credit-card me-2"></i>NIT/Cédula
-                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Costo Base -->
+                            <div class="col-md-6">
+                                <label for="costo" class="form-label required-field">Costo Base</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           id="costo" 
+                                           name="costo" 
+                                           step="0.01" 
+                                           value="<?= old('costo', $producto['costo'] ?? '') ?>" 
+                                           placeholder="0.00"
+                                           required>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Sección Información de Contacto -->
+                    <!-- Sección Impuestos e Inventario -->
                     <div class="form-section">
                         <h4 class="form-title">
-                            <i class="bi bi-telephone"></i>Información de Contacto
+                            <i class="bi bi-calculator"></i>Impuestos e Inventario
                         </h4>
                         
                         <div class="row">
-                            <!-- Email -->
+                            <!-- IVA -->
                             <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" 
+                                <label for="iva_porcentaje" class="form-label required-field">IVA %</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" 
                                            class="form-control" 
-                                           id="email" 
-                                           name="email" 
-                                           value="<?= old('email', $cliente['email'] ?? '') ?>" 
-                                           placeholder="cliente@empresa.com">
-                                    <label for="email">
-                                        <i class="bi bi-envelope me-2"></i>Correo Electrónico
-                                    </label>
+                                           id="iva_porcentaje" 
+                                           name="tasa_impuesto" 
+                                           step="0.01" 
+                                           value="<?= old('tasa_impuesto', $producto['tasa_impuesto'] ?? $iva_default ?? 19) ?>" 
+                                           placeholder="19"
+                                           required>
+                                    <span class="input-group-text">%</span>
                                 </div>
                             </div>
 
-                            <!-- Teléfono -->
+                            <!-- Inventario -->
                             <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="telefono" 
-                                           name="telefono" 
-                                           value="<?= old('telefono', $cliente['telefono'] ?? '') ?>" 
-                                           placeholder="3001234567">
-                                    <label for="telefono">
-                                        <i class="bi bi-phone me-2"></i>Teléfono
-                                    </label>
-                                </div>
+                                <label for="inventario" class="form-label required-field">Inventario/Stock</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="inventario" 
+                                       name="inventario" 
+                                       step="1" 
+                                       value="<?= old('inventario', $producto['inventario'] ?? 0) ?>" 
+                                       placeholder="0"
+                                       required>
                             </div>
-                        </div>
-
-                        <!-- Dirección -->
-                        <div class="form-floating mt-3">
-                            <input type="text" 
-                                   class="form-control" 
-                                   id="direccion" 
-                                   name="direccion" 
-                                   value="<?= old('direccion', $cliente['direccion'] ?? '') ?>" 
-                                   placeholder="Calle 123 # 45-67">
-                            <label for="direccion">
-                                <i class="bi bi-geo-alt me-2"></i>Dirección
-                            </label>
                         </div>
                     </div>
 
                     <!-- Botón de Envío -->
                     <button type="submit" class="btn-submit">
                         <i class="bi bi-check-circle me-2"></i>
-                        <?= isset($cliente) ? 'Actualizar Cliente' : 'Guardar Nuevo Cliente' ?>
+                        <?= isset($producto) ? 'Actualizar Producto' : 'Guardar Nuevo Producto' ?>
                     </button>
                 </form>
             </div>

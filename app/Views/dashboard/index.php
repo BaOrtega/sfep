@@ -234,7 +234,7 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="/productos">
+                <a href="<?= url_to('productos') ?>">
                     <i class="bi bi-box-seam me-3"></i>Productos
                 </a>
             </div>
@@ -282,7 +282,7 @@
                         <a href="/facturas/nueva" class="btn-action">
                             <i class="bi bi-receipt me-2"></i>Nueva Factura
                         </a>
-                        <a href="/productos" class="btn-action">
+                        <a href="<?= url_to('productos') ?>" class="btn-action">
                             <i class="bi bi-box-seam me-2"></i>Ver Productos
                         </a>
                         <a href="/reportes" class="btn-action">

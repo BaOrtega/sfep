@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .sidebar {
-            width: 200px;
+            width: 280px;
             height: 100vh;
             position: fixed;
             background: rgba(255, 255, 255, 0.95);
@@ -179,6 +179,12 @@
             margin-bottom: 20px;
             opacity: 0.5;
         }
+        .badge-stock {
+            font-size: 0.75em;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -193,12 +199,12 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('clientes') ?>" class="active">
+                <a href="<?= url_to('clientes') ?>">
                     <i class="bi bi-people me-3"></i>Clientes
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('productos') ?>">
+                <a href="<?= url_to('productos') ?>" class="active">
                     <i class="bi bi-box-seam me-3"></i>Productos
                 </a>
             </div>
@@ -237,11 +243,11 @@
             <div class="card-header-custom">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h2 class="mb-1"><i class="bi bi-people me-2"></i><?= esc($title) ?></h2>
-                        <p class="mb-0 opacity-75">Gestiona todos los clientes de tu empresa</p>
+                        <h2 class="mb-1"><i class="bi bi-box-seam me-2"></i><?= esc($title) ?></h2>
+                        <p class="mb-0 opacity-75">Gestiona todos los productos de tu inventario</p>
                     </div>
-                    <a href="<?= url_to('clientes/new') ?>" class="btn-modern">
-                        <i class="bi bi-plus-circle"></i>Nuevo Cliente
+                    <a href="<?= url_to('productos/new') ?>" class="btn-modern">
+                        <i class="bi bi-plus-circle"></i>Nuevo Producto
                     </a>
                 </div>
             </div>
@@ -259,27 +265,66 @@
 
                 <!-- Estadísticas -->
                 <div class="row mb-4">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="stats-card">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h3 class="mb-0"><?= count($clientes) ?></h3>
-                                    <p class="mb-0">Total Clientes</p>
+                                    <h3 class="mb-0"><?= count($productos) ?></h3>
+                                    <p class="mb-0">Total Productos</p>
                                 </div>
-                                <i class="bi bi-people-fill fs-1 opacity-75"></i>
+                                <i class="bi bi-box-seam fs-1 opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card" style="background: linear-gradient(135deg, #28a745, #20c997);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="mb-0"><?= array_sum(array_column($productos, 'inventario')) ?></h3>
+                                    <p class="mb-0">En Stock</p>
+                                </div>
+                                <i class="bi bi-check-circle fs-1 opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card" style="background: linear-gradient(135deg, #fd7e14, #e55a00);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h3 class="mb-0">
+                                        <?= count(array_filter($productos, function($p) { return $p['inventario'] <= 5 && $p['inventario'] > 0; })) ?>
+                                    </h3>
+                                    <p class="mb-0">Stock Bajo</p>
+                                </div>
+                                <i class="bi bi-exclamation-triangle fs-1 opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card" style="background: linear-gradient(135deg, #6f42c1, #5a2d9c);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">
+                                        $<?= number_format(array_sum(array_map(function($p) { 
+                                            return $p['costo'] * $p['inventario']; 
+                                        }, $productos)), 2, ',', '.') ?>
+                                    </h5>
+                                    <p class="mb-0">Valor Inventario</p>
+                                </div>
+                                <i class="bi bi-currency-dollar fs-1 opacity-75"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tabla de Clientes -->
-                <?php if (empty($clientes)): ?>
+                <!-- Tabla de Productos -->
+                <?php if (empty($productos)): ?>
                     <div class="empty-state">
-                        <i class="bi bi-people"></i>
-                        <h4>No hay clientes registrados</h4>
-                        <p class="text-muted">Comienza agregando tu primer cliente al sistema.</p>
-                        <a href="<?= url_to('clientes/new') ?>" class="btn-modern mt-3">
-                            <i class="bi bi-plus-circle"></i>Agregar Primer Cliente
+                        <i class="bi bi-inbox"></i>
+                        <h4>No hay productos registrados</h4>
+                        <p class="text-muted">Comienza agregando tu primer producto al inventario.</p>
+                        <a href="<?= url_to('productos/new') ?>" class="btn-modern mt-3">
+                            <i class="bi bi-plus-circle"></i>Agregar Primer Producto
                         </a>
                     </div>
                 <?php else: ?>
@@ -287,46 +332,48 @@
                         <table class="table table-modern">
                             <thead>
                                 <tr>
-                                    <th><i class="bi bi-person me-2"></i>Nombre</th>
-                                    <th><i class="bi bi-credit-card me-2"></i>NIT/Cédula</th>
-                                    <th><i class="bi bi-envelope me-2"></i>Email</th>
-                                    <th><i class="bi bi-telephone me-2"></i>Teléfono</th>
+                                    <th><i class="bi bi-tag me-2"></i>Nombre</th>
+                                    <th><i class="bi bi-currency-dollar me-2"></i>Precio Venta</th>
+                                    <th><i class="bi bi-currency-exchange me-2"></i>Costo</th>
+                                    <th><i class="bi bi-percent me-2"></i>IVA</th>
+                                    <th><i class="bi bi-box me-2"></i>Inventario</th>
                                     <th><i class="bi bi-gear me-2"></i>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($clientes as $cliente): ?>
+                                <?php foreach ($productos as $producto): ?>
                                     <tr>
-                                        <td class="fw-semibold"><?= esc($cliente['nombre']) ?></td>
                                         <td>
-                                            <span class="badge bg-light text-dark"><?= esc($cliente['nit']) ?></span>
-                                        </td>
-                                        <td>
-                                            <?php if (!empty($cliente['email'])): ?>
-                                                <a href="mailto:<?= esc($cliente['email']) ?>" class="text-decoration-none">
-                                                    <?= esc($cliente['email']) ?>
-                                                </a>
-                                            <?php else: ?>
-                                                <span class="text-muted">No especificado</span>
+                                            <div class="fw-semibold"><?= esc($producto['nombre']) ?></div>
+                                            <?php if (!empty($producto['descripcion'])): ?>
+                                                <small class="text-muted"><?= esc($producto['descripcion']) ?></small>
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?php if (!empty($cliente['telefono'])): ?>
-                                                <a href="tel:<?= esc($cliente['telefono']) ?>" class="text-decoration-none">
-                                                    <?= esc($cliente['telefono']) ?>
-                                                </a>
-                                            <?php else: ?>
-                                                <span class="text-muted">No especificado</span>
-                                            <?php endif; ?>
+                                            <span class="fw-bold text-success">$ <?= number_format(esc($producto['precio_unitario']), 2, ',', '.') ?></span>
+                                        </td>
+                                        <td>$ <?= number_format(esc($producto['costo']), 2, ',', '.') ?></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark"><?= esc($producto['tasa_impuesto']) ?>%</span>
                                         </td>
                                         <td>
+                                            <?php 
+                                                $stock = $producto['inventario'];
+                                                $badgeClass = $stock > 10 ? 'bg-success' : ($stock > 0 ? 'bg-warning' : 'bg-danger');
+                                                $stockText = $stock > 10 ? 'Alto' : ($stock > 0 ? 'Bajo' : 'Agotado');
+                                            ?>
+                                            <span class="badge <?= $badgeClass ?> badge-stock">
+                                                <?= esc($stock) ?> unidades
+                                            </span>
+                                        </td>
+                                       <td>
                                             <div class="btn-group" role="group">
-                                                <a href="<?= base_url('clientes/edit/' . esc($cliente['id'])) ?>" class="btn-edit">
+                                                <a href="<?= base_url('productos/edit/' . esc($producto['id'])) ?>" class="btn-edit">
                                                     <i class="bi bi-pencil"></i> Editar
                                                 </a>
-                                                <a href="<?= base_url('clientes/delete/' . esc($cliente['id'])) ?>" 
-                                                   class="btn-delete" 
-                                                   onclick="return confirm('¿Está seguro de eliminar este cliente?');">
+                                                <a href="<?= base_url('productos/delete/' . esc($producto['id'])) ?>" 
+                                                class="btn-delete" 
+                                                onclick="return confirm('¿Está seguro de eliminar este producto?');">
                                                     <i class="bi bi-trash"></i> Eliminar
                                                 </a>
                                             </div>

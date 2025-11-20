@@ -36,3 +36,17 @@ $routes->group('clientes', ['filter' => 'auth'], function($routes) {
     // Cantidad de clientes
     $routes->get('cantidadClientes', 'ClienteController::cantidadClientes');
 });
+
+// RUTAS DEL MÓDULO DE PRODUCTOS (CRUD)
+$routes->group('productos', ['filter' => 'auth'], function($routes) {
+    // Listar
+    $routes->get('/', 'ProductoController::index');
+    // Formulario de nuevo
+    $routes->get('new', 'ProductoController::new');
+    // Guardar (Crear o Actualizar)
+    $routes->post('save', 'ProductoController::save');
+    // Formulario de edición
+    $routes->get('edit/(:num)', 'ProductoController::edit/$1');
+    // Eliminar
+    $routes->get('delete/(:num)', 'ProductoController::delete/$1');
+});
