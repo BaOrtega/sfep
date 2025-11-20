@@ -1,6 +1,7 @@
 <?php namespace App\Controllers;
 
 use App\Models\ClienteModel;
+use App\Models\ProductoModel;
 
 class DashboardController extends BaseController
 {
@@ -12,6 +13,10 @@ class DashboardController extends BaseController
         $clienteModel = new ClienteModel();
         $data['totalClientes'] = $clienteModel->countAll();
         
+        $productoModel = new ProductoModel();
+        $data['totalProductos'] = $productoModel->countAll();
+        
+
         // Muestra la vista del dashboard
         return view('dashboard/index', $data);
     }

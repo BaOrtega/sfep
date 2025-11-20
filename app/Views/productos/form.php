@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .sidebar {
-            width: 280px;
+            width: 200px;
             height: 100vh;
             position: fixed;
             background: rgba(255, 255, 255, 0.95);

@@ -310,7 +310,7 @@
                 <div class="stat-icon text-warning">
                     <i class="bi bi-box-seam"></i>
                 </div>
-                <div class="stat-number text-warning">0</div>
+                <div class="stat-number text-warning"><?= $totalProductos ?></div>
                 <div class="stat-title">Productos en Inventario</div>
             </div>
             
@@ -330,10 +330,9 @@
                 <div class="stat-title">Reportes Generados</div>
             </div>
         </div>
-
         <div class="row">
             <!-- Estado del Sistema -->
-            <div class="col-md-8">
+           <!-- <div class="col-md-8">
                 <div class="card-main">
                     <div class="card-header-custom">
                         <h3 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Estado del Sistema</h3>
@@ -384,6 +383,7 @@
                     </div>
                 </div>
             </div>
+        -->
 
             <!-- Módulos del Sistema -->
             <div class="col-md-4">
