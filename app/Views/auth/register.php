@@ -151,7 +151,7 @@
                     <label for="email">
                         <i class="bi bi-envelope me-2"></i>Email
                     </label>
-                    <div class="form-text">Ejemplo: admin@pfep.com</div>
+                    <div class="form-text"></div>
                 </div>
 
                 <!-- Campo Contraseña -->

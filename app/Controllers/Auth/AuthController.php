@@ -27,7 +27,7 @@ class AuthController extends BaseController
         $data = [
             'nombre'   => $this->request->getPost('nombre'),
             'email'    => $this->request->getPost('email'),
-            // 'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            //'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
             'password' => $this->request->getPost('password'), 
         ];
 

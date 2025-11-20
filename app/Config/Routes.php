@@ -9,19 +9,19 @@ $routes->get('/', 'Home::index');
 $routes->get('test', 'Test::index');
 $routes->get('demo', 'Demo::index');
 
-// Rutas de Registro (Nuevas)
+// Rutas de Registro
 $routes->get('register', 'Auth\AuthController::register', ['as' => 'register']);
 $routes->post('attemptRegister', 'Auth\AuthController::attemptRegister', ['as' => 'attemptRegister']);
 
-// Login y autenticación
+// Rutas de Atenticación
 $routes->get('login', 'Auth\AuthController::login', ['as' => 'login']);
 $routes->post('attemptLogin', 'Auth\AuthController::attemptLogin', ['as' => 'attemptLogin']);
 $routes->get('logout', 'Auth\AuthController::logout', ['as' => 'logout']);
 
-// Dashboard
+// Rutas de Dashboard
 $routes->get('dashboard', 'DashboardController::index', ['as' => 'dashboard', 'filter' => 'auth']);
 
-// RUTAS DEL MÓDULO DE CLIENTES (CRUD) - Protegidas por el filtro 'auth'
+// RUTAS DEL MÓDULO DE CLIENTES (CRUD)
 $routes->group('clientes', ['filter' => 'auth'], function($routes) {
     // Listar clientes (READ)
     $routes->get('/', 'ClienteController::index');

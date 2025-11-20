@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .sidebar {
-            width: 280px;
+            width: 200px;
             height: 100vh;
             position: fixed;
             background: rgba(255, 255, 255, 0.95);
@@ -302,7 +302,7 @@
                 <div class="stat-icon text-success">
                     <i class="bi bi-people-fill"></i>
                 </div>
-                <div class="stat-number text-success">0</div>
+                <div class="stat-number text-success"><?= $totalClientes ?></div>
                 <div class="stat-title">Clientes Registrados</div>
             </div>
             
