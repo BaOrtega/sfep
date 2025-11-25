@@ -239,8 +239,8 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="/facturas/nueva">
-                    <i class="bi bi-receipt me-3"></i>Nueva Factura
+                <a href="<?= url_to('facturas') ?>">
+                    <i class="bi bi-receipt me-3"></i>Factura
                 </a>
             </div>
             <div class="nav-item">
@@ -279,8 +279,8 @@
                         <a href="<?= url_to('clientes') ?>" class="btn-action">
                             <i class="bi bi-people me-2"></i>Gestionar Clientes
                         </a>
-                        <a href="/facturas/nueva" class="btn-action">
-                            <i class="bi bi-receipt me-2"></i>Nueva Factura
+                        <a href="<?=  url_to('facturas') ?>" class="btn-action">
+                            <i class="bi bi-receipt me-2"></i>Factura
                         </a>
                         <a href="<?= url_to('productos') ?>" class="btn-action">
                             <i class="bi bi-box-seam me-2"></i>Ver Productos

@@ -50,3 +50,15 @@ $routes->group('productos', ['filter' => 'auth'], function($routes) {
     // Eliminar
     $routes->get('delete/(:num)', 'ProductoController::delete/$1');
 });
+
+// RUTAS DEL MÓDULO DE FACTURACIÓN (CU-001) - Protegidas
+$routes->group('facturas', ['filter' => 'auth'], function($routes) {
+    // Listar (FacturaController::index)
+    $routes->get('/', 'FacturaController::index');
+    // Formulario de nueva factura (FacturaController::new)
+    $routes->get('new', 'FacturaController::new');
+    // Guardar factura (FacturaController::save)
+    $routes->post('save', 'FacturaController::save'); 
+    
+    // (A futuro: 'view/(:num)', etc.)
+});

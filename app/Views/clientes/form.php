@@ -211,8 +211,8 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="/facturas/nueva">
-                    <i class="bi bi-receipt me-3"></i>Nueva Factura
+                <a href="<?= url_to('facturas') ?>">
+                    <i class="bi bi-receipt me-3"></i>Factura
                 </a>
             </div>
             <div class="nav-item">
