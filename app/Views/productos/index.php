@@ -199,17 +199,17 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('clientes') ?>">
+                <a href="<?= url_to('clientes_index') ?>">
                     <i class="bi bi-people me-3"></i>Clientes
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('productos') ?>" class="active">
+                <a href="<?= url_to('productos_index') ?>" class="active">
                     <i class="bi bi-box-seam me-3"></i>Productos
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('facturas') ?>">
+                <a href="<?= url_to('facturas_index') ?>">
                     <i class="bi bi-receipt me-3"></i>Factura
                 </a>
             </div>
@@ -246,7 +246,7 @@
                         <h2 class="mb-1"><i class="bi bi-box-seam me-2"></i><?= esc($title) ?></h2>
                         <p class="mb-0 opacity-75">Gestiona todos los productos de tu inventario</p>
                     </div>
-                    <a href="<?= url_to('productos/new') ?>" class="btn-modern">
+                    <a href="<?= url_to('productos_new') ?>" class="btn-modern">
                         <i class="bi bi-plus-circle"></i>Nuevo Producto
                     </a>
                 </div>
@@ -323,7 +323,7 @@
                         <i class="bi bi-inbox"></i>
                         <h4>No hay productos registrados</h4>
                         <p class="text-muted">Comienza agregando tu primer producto al inventario.</p>
-                        <a href="<?= url_to('productos/new') ?>" class="btn-modern mt-3">
+                        <a href="<?= url_to('productos_new') ?>" class="btn-modern mt-3">
                             <i class="bi bi-plus-circle"></i>Agregar Primer Producto
                         </a>
                     </div>
@@ -368,11 +368,10 @@
                                         </td>
                                        <td>
                                             <div class="btn-group" role="group">
-                                                <a href="<?= base_url('productos/edit/' . esc($producto['id'])) ?>" class="btn-edit">
+                                                <a href="<?= url_to('productos_edit', $producto['id']) ?>" class="btn-edit">
                                                     <i class="bi bi-pencil"></i> Editar
                                                 </a>
-                                                <a href="<?= base_url('productos/delete/' . esc($producto['id'])) ?>" 
-                                                class="btn-delete" 
+                                                <a href="<?= url_to('productos_delete', $producto['id']) ?>" class="btn-delete" 
                                                 onclick="return confirm('¿Está seguro de eliminar este producto?');">
                                                     <i class="bi bi-trash"></i> Eliminar
                                                 </a>

@@ -201,17 +201,17 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('clientes') ?>">
+                <a href="<?= url_to('clientes_index') ?>">
                     <i class="bi bi-people me-3"></i>Clientes
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('productos') ?>" class="active">
+                <a href="<?= url_to('productos_index') ?>" class="active">
                     <i class="bi bi-box-seam me-3"></i>Productos
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('facturas') ?>">
+                <a href="<?= url_to('facturas_index') ?>">
                     <i class="bi bi-receipt me-3"></i>Factura
                 </a>
             </div>
@@ -241,7 +241,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- Botón Volver -->
-        <a href="<?= url_to('productos') ?>" class="btn-back">
+        <a href="<?= url_to('productos_index') ?>" class="btn-back">
             <i class="bi bi-arrow-left"></i>Volver a Productos
         </a>
 
@@ -280,7 +280,7 @@
                     </div>
                 <?php endif; ?>
 
-                <form action="<?= base_url('productos/save') ?>" method="post">
+                <form action="<?= url_to('productos_save') ?>" method="post">
                     <?= csrf_field() ?>
                     
                     <!-- Campo oculto para el ID si estamos editando -->

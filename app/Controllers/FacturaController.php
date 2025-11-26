@@ -126,4 +126,82 @@ class FacturaController extends BaseController
         session()->setFlashdata('success', 'Factura N°' . $factura_id . ' emitida con éxito. Total: $' . number_format($total_factura, 2, ',', '.'));
         return redirect()->to(url_to('facturas'));
     }
+
+
+    public function view($id)
+    {
+        // 1. Obtener la cabecera de la factura
+        $factura = $this->facturaModel->find($id);
+
+        if (empty($factura)) {
+            // Manejo de error si la factura no existe
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Factura N°: ' . $id . ' no encontrada.');
+        }
+
+        // 2. Obtener los datos del cliente
+        $cliente = $this->clienteModel->find($factura['cliente_id']);
+        
+        // 3. Obtener los detalles de la factura con el nombre del producto.
+        // Usamos JOIN para obtener el nombre del producto directamente
+        $detalles = $this->detalleModel
+            ->select('detalle_factura.*, productos.nombre')
+            ->join('productos', 'productos.id = detalle_factura.producto_id')
+            ->where('factura_id', $id)
+            ->findAll();
+
+        $data['title'] = "Detalle de Factura N°" . $id;
+        $data['factura'] = $factura;
+        $data['cliente'] = $cliente;
+        $data['detalles'] = $detalles;
+        
+        return view('facturas/view', $data); // Cargar la nueva vista
+    }
+
+    // app/Controllers/FacturaController.php (Añadir dentro de la clase FacturaController)
+
+// ...
+
+    // [ACTION] CAMBIA EL ESTADO A PAGADA
+    public function pagar($id)
+    {
+        $factura = $this->facturaModel->find($id);
+
+        if (empty($factura)) {
+            session()->setFlashdata('error', 'Factura no encontrada.');
+            return redirect()->to(url_to('facturas_index'));
+        }
+
+        // 1. Actualizar el estado
+        $this->facturaModel->update($id, ['estado' => 'PAGADA']);
+
+        // 2. Redirigir
+        session()->setFlashdata('success', 'Factura N°' . $id . ' marcada como PAGADA con éxito.');
+        return redirect()->to(url_to('facturas_view', $id));
+    }
+
+    // [ACTION] CAMBIA EL ESTADO A ANULADA
+    public function anular($id)
+    {
+        $factura = $this->facturaModel->find($id);
+        
+        if (empty($factura)) {
+            session()->setFlashdata('error', 'Factura no encontrada.');
+            return redirect()->to(url_to('facturas_index'));
+        }
+
+        if ($factura['estado'] == 'ANULADA') {
+            session()->setFlashdata('info', 'La Factura N°' . $id . ' ya está ANULADA.');
+            return redirect()->to(url_to('facturas_view', $id));
+        }
+
+        // 1. Actualizar el estado
+        // NOTA: En un sistema real, aquí se revertiría el inventario.
+        $this->facturaModel->update($id, ['estado' => 'ANULADA']);
+
+        // 2. Redirigir
+        session()->setFlashdata('success', 'Factura N°' . $id . ' ha sido ANULADA con éxito.');
+        return redirect()->to(url_to('facturas_view', $id));
+    }
+
+
 }

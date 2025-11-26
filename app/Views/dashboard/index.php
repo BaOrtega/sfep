@@ -229,17 +229,17 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('clientes') ?>">
+                <a href="<?= url_to('clientes_index') ?>">
                     <i class="bi bi-people me-3"></i>Clientes
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('productos') ?>">
+                <a href="<?= url_to('productos_index') ?>">
                     <i class="bi bi-box-seam me-3"></i>Productos
                 </a>
             </div>
             <div class="nav-item">
-                <a href="<?= url_to('facturas') ?>">
+                <a href="<?= url_to('facturas_index') ?>">
                     <i class="bi bi-receipt me-3"></i>Factura
                 </a>
             </div>
@@ -276,13 +276,13 @@
                     <p class="mb-4 opacity-90">La seguridad del sistema está operativa. La precondición de autenticación para la creación de facturas (CU-001) ya está cubierta. Ahora podemos construir los módulos de gestión.</p>
                     
                     <div class="quick-actions">
-                        <a href="<?= url_to('clientes') ?>" class="btn-action">
+                        <a href="<?= url_to('clientes_index') ?>" class="btn-action">
                             <i class="bi bi-people me-2"></i>Gestionar Clientes
                         </a>
-                        <a href="<?=  url_to('facturas') ?>" class="btn-action">
+                        <a href="<?=  url_to('facturas_index') ?>" class="btn-action">
                             <i class="bi bi-receipt me-2"></i>Factura
                         </a>
-                        <a href="<?= url_to('productos') ?>" class="btn-action">
+                        <a href="<?= url_to('productos_index') ?>" class="btn-action">
                             <i class="bi bi-box-seam me-2"></i>Ver Productos
                         </a>
                         <a href="/reportes" class="btn-action">
@@ -386,7 +386,7 @@
         -->
 
             <!-- Módulos del Sistema -->
-            <div class="col-md-4">
+           <!-- <div class="col-md-4">
                 <div class="card-main">
                     <div class="card-header-custom">
                         <h3 class="mb-0"><i class="bi bi-grid me-2"></i>Módulos</h3>
@@ -394,7 +394,7 @@
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-6">
-                                <a href="<?= url_to('clientes') ?>" class="module-card text-decoration-none text-dark d-block">
+                                <a href= "/clientes" class="module-card text-decoration-none text-dark d-block">
                                     <div class="module-icon">
                                         <i class="bi bi-people"></i>
                                     </div>
@@ -432,7 +432,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
