@@ -224,6 +224,9 @@
             <a href="<?= url_to('facturas_index') ?>" class="btn btn-back">
                 <i class="bi bi-arrow-left me-2"></i>Volver al Listado
             </a>
+            <a href="<?= url_to('facturas_pdf', $factura['id']) ?>" class="btn btn-success" target="_blank">
+    📥 Generar PDF
+</a>
         </div>
 
         <!-- Encabezado de Factura -->

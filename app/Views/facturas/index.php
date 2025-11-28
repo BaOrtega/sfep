@@ -310,7 +310,7 @@
                                 <?php foreach ($facturas as $factura): ?>
                                     <tr>
                                         <td class="fw-bold">#<?= esc($factura['id']) ?></td>
-                                        <td><?= esc($factura['cliente_nombre'] ?? 'Cliente ' . $factura['cliente_id']) ?></td>
+                                        <td><?= esc($factura['cliente_nombre'] ?? ' ' . $factura['nombre_cliente']) ?></td>
                                         <td><?= esc($factura['fecha_emision']) ?></td>
                                         <td class="fw-bold">$ <?= number_format(esc($factura['total_factura']), 2, ',', '.') ?></td>
                                         <td>

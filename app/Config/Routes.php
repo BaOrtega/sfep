@@ -66,4 +66,21 @@ $routes->group('facturas', ['filter' => 'auth'], function($routes) {
     // Acciones de Gestión de Estado (UPDATE)
     $routes->get('anular/(:num)', 'FacturaController::anular/$1', ['as' => 'facturas_anular']);
     $routes->get('pagar/(:num)', 'FacturaController::pagar/$1', ['as' => 'facturas_pagar']);
+
+    // Generar PDF de la Factura
+    $routes->get('pdf/(:num)', 'FacturaController::generatePdf/$1', ['as' => 'facturas_pdf']);
+});
+
+// RUTAS DEL MÓDULO DE REPORTES Y ANÁLISIS
+$routes->group('reportes', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'ReporteController::index', ['as' => 'reportes_index']);
+    
+    // Reportes específicos
+    $routes->get('ventas', 'ReporteController::ventasPorPeriodo', ['as' => 'reportes_ventas']);
+    $routes->post('ventas', 'ReporteController::ventasPorPeriodo');
+    $routes->get('exportar-ventas-pdf', 'ReporteController::exportarVentasPDF', ['as' => 'exportar_ventas_pdf']);
+    
+    $routes->get('cuentas_por_cobrar', 'ReporteController::cuentasPorCobrar', ['as' => 'reportes_cxc']);
+    $routes->get('clientes', 'ReporteController::clientes', ['as' => 'reportes_clientes']);
+    $routes->get('productos', 'ReporteController::productos', ['as' => 'reportes_productos']);
 });

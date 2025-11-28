@@ -244,7 +244,7 @@
                 </a>
             </div>
             <div class="nav-item">
-                <a href="/reportes">
+                <a href="<?= url_to('reportes_index') ?>">
                     <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
                 </a>
             </div>
@@ -285,7 +285,7 @@
                         <a href="<?= url_to('productos_index') ?>" class="btn-action">
                             <i class="bi bi-box-seam me-2"></i>Ver Productos
                         </a>
-                        <a href="/reportes" class="btn-action">
+                        <a href="<?= url_to('reportes_index') ?>" class="btn-action">
                             <i class="bi bi-bar-chart me-2"></i>Ver Reportes
                         </a>
                     </div>
