@@ -156,7 +156,7 @@
         <nav>
             <div class="nav-item">
                 <a href="<?= url_to('dashboard') ?>">
-                    <i class="bi bi-speedometer2 me-3"></i>Dashboard
+                    <i class="bi bi-house me-3"></i>Dashboard
                 </a>
             </div>
             <div class="nav-item">
