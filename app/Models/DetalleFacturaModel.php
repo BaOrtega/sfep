@@ -10,14 +10,25 @@ class DetalleFacturaModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType     = 'array';
     
-    // Campos permitidos, reflejando la estructura de tu CREATE TABLE
     protected $allowedFields = [
-        'factura_id', 
-        'producto_id', 
-        'descripcion_adicional', 
-        'cantidad', 
-        'precio_unitario',          // Nombre CORREGIDO
-        'tasa_impuesto',            // Nombre CORREGIDO
-        'total_linea', 
+        'factura_id',
+        'producto_id',
+        'descripcion_adicional',
+        'cantidad',
+        'precio_unitario',
+        'tasa_impuesto',
+        'total_linea'
+        // NO incluir 'created_at' - la tabla no lo tiene
+    ];
+    
+    protected $useTimestamps = false;
+    
+    protected $validationRules = [
+        'factura_id'    => 'required|is_not_unique[facturas.id]',
+        'producto_id'   => 'required|is_not_unique[productos.id]',
+        'cantidad'      => 'required|greater_than[0]',
+        'precio_unitario' => 'required|greater_than[0]',
+        'tasa_impuesto' => 'required',
+        'total_linea'   => 'required|greater_than[0]'
     ];
 }

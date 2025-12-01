@@ -24,15 +24,26 @@ class FacturaController extends BaseController
     // [READ] LISTAR FACTURAS
     public function index()
     {
+        // Obtener facturas ÚNICAS usando DISTINCT para evitar duplicados
         $data['facturas'] = $this->facturaModel
-        ->select('facturas.*') 
-        // ¡Importante! Seleccionamos el nombre del cliente y le damos un alias claro
-        ->select('clientes.nombre AS nombre_cliente') 
-        // Realizamos la unión de las dos tablas
-        ->join('clientes', 'clientes.id = facturas.cliente_id')
-        // Ordenamos por ID descendente
-        ->orderBy('facturas.id', 'DESC')
-        ->findAll();
+            ->select('facturas.*, clientes.nombre as cliente_nombre, clientes.nit as cliente_documento')
+            ->distinct() // ¡ESTO ES CLAVE! Previene duplicados
+            ->join('clientes', 'clientes.id = facturas.cliente_id')
+            ->orderBy('facturas.id', 'DESC')
+            ->findAll();
+        
+        // Calcular estadísticas
+        $data['totalFacturas'] = count($data['facturas']);
+        $data['facturasEmitidas'] = $this->facturaModel
+            ->where('estado', 'EMITIDA')
+            ->countAllResults();
+        $data['facturasPendientes'] = $this->facturaModel
+            ->where('estado', 'PAGADA')
+            ->countAllResults();
+        $data['facturasAnuladas'] = $this->facturaModel
+            ->where('estado', 'ANULADA')
+            ->countAllResults();
+        
         $data['title'] = "Gestión de Facturas";
         
         return view('facturas/index', $data);
@@ -55,115 +66,174 @@ class FacturaController extends BaseController
         return view('facturas/form', $data);
     }
 
-    // [CREATE/UPDATE] PROCESAR Y GUARDAR FACTURA
+    // [CREATE/UPDATE] PROCESAR Y GUARDAR FACTURA - CORREGIDO (SIN created_at)
     public function save()
     {
-        $post = $this->request->getPost();
-        $detalles_json = $post['detalles_json']; // JSON con los productos de la vista
-        $detalles_productos = json_decode($detalles_json, true);
+        // Verificar que sea una solicitud POST
+        if (!$this->request->is('post')) {
+            session()->setFlashdata('error', 'Método no permitido.');
+            return redirect()->to(url_to('facturas_new'));
+        }
         
-        if (empty($detalles_productos)) {
+        $post = $this->request->getPost();
+        
+        // Validación básica
+        if (empty($post['cliente_id'])) {
+            session()->setFlashdata('error', 'Debe seleccionar un cliente.');
+            return redirect()->back()->withInput();
+        }
+        
+        if (empty($post['detalles_json'])) {
             session()->setFlashdata('error', 'Debe agregar al menos un producto a la factura.');
             return redirect()->back()->withInput();
         }
-
+        
+        $detalles_json = $post['detalles_json'];
+        $detalles_productos = json_decode($detalles_json, true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE || empty($detalles_productos)) {
+            session()->setFlashdata('error', 'El detalle de productos está vacío o es inválido.');
+            return redirect()->back()->withInput();
+        }
+        
         $subtotal_general = 0;
         $impuestos_general = 0;
 
-        // 1. CALCULAR TOTALES DE LA FACTURA
+        // 1. VALIDAR STOCK Y CALCULAR TOTALES
         foreach ($detalles_productos as $detalle) {
-            // Verificar si el stock es suficiente antes de proceder
-            $producto_id = $detalle['producto_id'];
-            $cantidad_vendida = $detalle['cantidad'];
+            if (!isset($detalle['producto_id'], $detalle['cantidad'])) {
+                session()->setFlashdata('error', 'Datos de producto incompletos.');
+                return redirect()->back()->withInput();
+            }
+            
+            $producto_id = (int)$detalle['producto_id'];
+            $cantidad_vendida = (int)$detalle['cantidad'];
+            
+            // Validar que la cantidad sea positiva
+            if ($cantidad_vendida <= 0) {
+                session()->setFlashdata('error', 'La cantidad debe ser mayor a 0.');
+                return redirect()->back()->withInput();
+            }
             
             $productoActual = $this->productoModel->find($producto_id);
 
-            // Validar stock: Si el producto existe y la cantidad vendida es mayor que el inventario actual
-            if (!$productoActual || $cantidad_vendida > $productoActual['inventario']) {
-                session()->setFlashdata('error', 'Error: La cantidad de ' . esc($productoActual['nombre'] ?? 'un producto') . ' excede el inventario disponible (' . esc($productoActual['inventario'] ?? 0) . ').');
+            if (!$productoActual) {
+                session()->setFlashdata('error', 'Producto no encontrado.');
+                return redirect()->back()->withInput();
+            }
+            
+            if ($cantidad_vendida > $productoActual['inventario']) {
+                session()->setFlashdata('error', 'La cantidad de ' . esc($productoActual['nombre']) . 
+                    ' excede el inventario disponible (' . $productoActual['inventario'] . ').');
                 return redirect()->back()->withInput();
             }
 
-            $subtotal_general += $detalle['subtotal_linea'];
-            $impuestos_general += $detalle['impuesto_linea'];
+            // Calcular subtotal e impuestos para esta línea
+            $precio_unitario = (float)($detalle['precio_unitario_venta'] ?? $productoActual['precio_unitario']);
+            $tasa_impuesto = (float)($detalle['iva_porcentaje_venta'] ?? $productoActual['tasa_impuesto']);
+            
+            $subtotal_linea = $precio_unitario * $cantidad_vendida;
+            $impuesto_linea = $subtotal_linea * ($tasa_impuesto / 100);
+            
+            $subtotal_general += $subtotal_linea;
+            $impuestos_general += $impuesto_linea;
         }
 
         $total_factura = $subtotal_general + $impuestos_general;
         
+        // Validar que el total sea positivo
+        if ($total_factura <= 0) {
+            session()->setFlashdata('error', 'El total de la factura debe ser mayor a 0.');
+            return redirect()->back()->withInput();
+        }
+        
         // Obtener el ID del usuario logeado
         $usuario_id = session()->get('user_id'); 
         if (!$usuario_id) {
-             session()->setFlashdata('error', 'Sesión de usuario no válida.');
-             return redirect()->to('/login');
+            session()->setFlashdata('error', 'Sesión de usuario no válida. Por favor, inicie sesión nuevamente.');
+            return redirect()->to('/login');
         }
-
-        // 2. INSERTAR LA CABECERA (Factura principal)
+        
+        // PREPARAR DATOS DE LA FACTURA (SIN created_at)
         $facturaData = [
-            'cliente_id'        => $post['cliente_id'],
-            'usuario_id'        => $usuario_id, // Usar el ID del usuario logeado
+            'cliente_id'        => (int)$post['cliente_id'],
+            'usuario_id'        => (int)$usuario_id,
             'fecha_emision'     => $post['fecha_emision'],
             'fecha_vencimiento' => $post['fecha_vencimiento'],
             'subtotal'          => $subtotal_general,
             'total_impuestos'   => $impuestos_general,
             'total_factura'     => $total_factura,
             'moneda'            => 'COP',
-            'estado'            => 'EMITIDA', 
+            'estado'            => 'EMITIDA'
+            // REMOVIDO: 'created_at' => date('Y-m-d H:i:s')
         ];
-
-        // Usamos transacciones para asegurar la integridad (Factura y Stock)
-        $this->facturaModel->db->transStart();
         
-        if (!$this->facturaModel->insert($facturaData)) {
-            $this->facturaModel->db->transRollback();
-            session()->setFlashdata('error', 'Error al crear la cabecera de la factura.');
+        // USAR TRANSACCIÓN
+        $db = \Config\Database::connect();
+        $db->transStart();
+        
+        try {
+            // Insertar cabecera de factura
+            if (!$this->facturaModel->insert($facturaData)) {
+                $error = $this->facturaModel->errors();
+                throw new \Exception('Error al crear la cabecera de la factura: ' . implode(', ', $error));
+            }
+
+            $factura_id = $this->facturaModel->getInsertID();
+            
+            // INSERTAR DETALLES Y ACTUALIZAR INVENTARIO (SIN created_at)
+            foreach ($detalles_productos as $detalle) {
+                $producto_id = (int)$detalle['producto_id'];
+                $cantidad = (int)$detalle['cantidad'];
+                $precio_unitario = (float)($detalle['precio_unitario_venta'] ?? 0);
+                $tasa_impuesto = (float)($detalle['iva_porcentaje_venta'] ?? 0);
+                
+                $subtotal_linea = $precio_unitario * $cantidad;
+                $impuesto_linea = $subtotal_linea * ($tasa_impuesto / 100);
+                $total_linea = $subtotal_linea + $impuesto_linea;
+                
+                $detalleData = [
+                    'factura_id'      => $factura_id,
+                    'producto_id'     => $producto_id,
+                    'cantidad'        => $cantidad,
+                    'precio_unitario' => $precio_unitario,
+                    'tasa_impuesto'   => $tasa_impuesto,
+                    'total_linea'     => $total_linea
+                    // REMOVIDO: 'created_at' => date('Y-m-d H:i:s')
+                ];
+                
+                if (!$this->detalleModel->insert($detalleData)) {
+                    $error = $this->detalleModel->errors();
+                    throw new \Exception('Error al guardar el detalle: ' . implode(', ', $error));
+                }
+                
+                // Actualizar inventario
+                $productoActual = $this->productoModel->find($producto_id);
+                if ($productoActual) {
+                    $nuevo_inventario = $productoActual['inventario'] - $cantidad;
+                    
+                    if (!$this->productoModel->update($producto_id, ['inventario' => $nuevo_inventario])) {
+                        $error = $this->productoModel->errors();
+                        throw new \Exception('Error al actualizar inventario: ' . implode(', ', $error));
+                    }
+                }
+            }
+            
+            $db->transComplete();
+            
+            if ($db->transStatus() === false) {
+                throw new \Exception('La transacción falló.');
+            }
+            
+            session()->setFlashdata('success', 'Factura N°' . $factura_id . ' emitida con éxito. Total: $' . number_format($total_factura, 2, ',', '.'));
+            return redirect()->to(url_to('facturas_index'));
+            
+        } catch (\Exception $e) {
+            $db->transRollback();
+            session()->setFlashdata('error', $e->getMessage());
             return redirect()->back()->withInput();
         }
-
-        $factura_id = $this->facturaModel->getInsertID();
-
-        // 3. INSERTAR EL DETALLE DE LA FACTURA Y DESCONTAR INVENTARIO
-        foreach ($detalles_productos as $detalle) {
-            $detalleData = [
-                'factura_id'              => $factura_id,
-                'producto_id'             => $detalle['producto_id'],
-                'cantidad'                => $detalle['cantidad'],
-                'precio_unitario'         => $detalle['precio_unitario_venta'], // Nombre CORREGIDO
-                'tasa_impuesto'           => $detalle['iva_porcentaje_venta'],  // Nombre CORREGIDO
-                'total_linea'             => $detalle['total_linea'], // Usamos total_linea de la DB
-            ];
-
-            if (!$this->detalleModel->insert($detalleData)) {
-                $this->facturaModel->db->transRollback();
-                session()->setFlashdata('error', 'Error al guardar el detalle de los productos.');
-                return redirect()->back()->withInput();
-            }
-            
-            // 4. [NUEVA LÓGICA DE INVENTARIO] Descontar la cantidad vendida del inventario
-            $producto_id = $detalle['producto_id'];
-            $cantidad_vendida = $detalle['cantidad'];
-            
-            // Volvemos a obtener el producto (o usamos el que ya cargamos si es una lista estática, pero por seguridad, lo volvemos a cargar)
-            $productoActual = $this->productoModel->find($producto_id);
-
-            if ($productoActual) {
-                $nuevo_inventario = $productoActual['inventario'] - $cantidad_vendida;
-                
-                // Actualizar el inventario en la tabla 'productos'
-                $this->productoModel->update($producto_id, ['inventario' => $nuevo_inventario]);
-            }
-        }
-
-        $this->facturaModel->db->transComplete();
-        // Si la transacción falla por alguna razón (y no fue capturada por el Rollback), podemos revisar los logs.
-        if ($this->facturaModel->db->transStatus() === false) {
-             session()->setFlashdata('error', 'La transacción de guardado de factura y stock falló.');
-             return redirect()->back()->withInput();
-        }
-
-        session()->setFlashdata('success', 'Factura N°' . $factura_id . ' emitida con éxito. Stock de productos actualizado. Total: $' . number_format($total_factura, 2, ',', '.'));
-        return redirect()->to(url_to('facturas'));
     }
-
 
     public function view($id)
     {
@@ -171,15 +241,13 @@ class FacturaController extends BaseController
         $factura = $this->facturaModel->find($id);
 
         if (empty($factura)) {
-            // Manejo de error si la factura no existe
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Factura N°: ' . $id . ' no encontrada.');
         }
 
         // 2. Obtener los datos del cliente
         $cliente = $this->clienteModel->find($factura['cliente_id']);
         
-        // 3. Obtener los detalles de la factura con el nombre del producto.
-        // Usamos JOIN para obtener el nombre del producto directamente
+        // 3. Obtener los detalles de la factura
         $detalles = $this->detalleModel
             ->select('detalle_factura.*, productos.nombre')
             ->join('productos', 'productos.id = detalle_factura.producto_id')
@@ -191,7 +259,7 @@ class FacturaController extends BaseController
         $data['cliente'] = $cliente;
         $data['detalles'] = $detalles;
         
-        return view('facturas/view', $data); // Cargar la nueva vista
+        return view('facturas/view', $data);
     }
 
     // [ACTION] CAMBIA EL ESTADO A PAGADA
@@ -204,16 +272,13 @@ class FacturaController extends BaseController
             return redirect()->to(url_to('facturas_index'));
         }
 
-        // Si la factura ya está anulada, no se puede pagar
         if ($factura['estado'] == 'ANULADA') {
             session()->setFlashdata('warning', 'La factura N°' . $id . ' está anulada y no puede ser marcada como PAGADA.');
             return redirect()->to(url_to('facturas_view', $id));
         }
 
-        // 1. Actualizar el estado
         $this->facturaModel->update($id, ['estado' => 'PAGADA']);
 
-        // 2. Redirigir
         session()->setFlashdata('success', 'Factura N°' . $id . ' marcada como PAGADA con éxito.');
         return redirect()->to(url_to('facturas_view', $id));
     }
@@ -233,7 +298,6 @@ class FacturaController extends BaseController
             return redirect()->to(url_to('facturas_view', $id));
         }
 
-        // Iniciar transacción para asegurar que la anulación y la reversión de inventario sean atómicas
         $this->facturaModel->db->transStart();
 
         // 1. Obtener los detalles de la factura a anular
@@ -247,10 +311,8 @@ class FacturaController extends BaseController
             $productoActual = $this->productoModel->find($productoId);
             
             if ($productoActual) {
-                // [NUEVA LÓGICA DE INVENTARIO] Sumar la cantidad de vuelta al inventario (columna 'inventario')
                 $nuevo_inventario = $productoActual['inventario'] + $cantidad;
                 
-                // Actualizar el inventario
                 $this->productoModel->update($productoId, ['inventario' => $nuevo_inventario]);
             }
         }
@@ -258,25 +320,22 @@ class FacturaController extends BaseController
         // 3. Actualizar el estado de la factura a ANULADA
         $this->facturaModel->update($id, ['estado' => 'ANULADA']);
 
-        $this->facturaModel->db->transComplete(); // Finalizar la transacción
+        $this->facturaModel->db->transComplete();
 
         if ($this->facturaModel->db->transStatus() === false) {
-             session()->setFlashdata('error', 'La anulación de la factura y la reversión de stock fallaron.');
-             return redirect()->to(url_to('facturas_view', $id));
+            session()->setFlashdata('error', 'La anulación de la factura y la reversión de stock fallaron.');
+            return redirect()->to(url_to('facturas_view', $id));
         }
 
-        // 4. Redirigir
         session()->setFlashdata('success', 'Factura N°' . $id . ' ha sido ANULADA y el inventario revertido con éxito.');
         return redirect()->to(url_to('facturas_view', $id));
     }
 
     public function generatePdf($id)
     {
-        // 1. OBTENER LOS DATOS (misma lógica que en view($id))
         $factura = $this->facturaModel->find($id);
 
         if (empty($factura)) {
-            // Manejo de error
             return redirect()->to(url_to('facturas_index'))->with('error', 'Factura no encontrada para PDF.');
         }
 
@@ -292,28 +351,16 @@ class FacturaController extends BaseController
         $data['cliente'] = $cliente;
         $data['detalles'] = $detalles;
 
-        // 2. CARGAR LA VISTA HTML (usando la vista limpia que crearemos a continuación)
         $html = view('facturas/pdf_template', $data);
 
-        // 3. GENERAR EL PDF USANDO DOMPDF
         $dompdf = new Dompdf();
-
-        // Carga el HTML generado
         $dompdf->loadHtml($html);
-
-        // Configura el tamaño del papel (A4 es estándar)
         $dompdf->setPaper('A4', 'portrait');
-
-        // Renderiza el HTML a PDF
         $dompdf->render();
 
-        // Enviar el archivo PDF al navegador
         $filename = 'Factura_' . $id . '.pdf';
-
-        // 'I' = Inline (Muestra el PDF en el navegador), 'D' = Download (Descarga el archivo)
         $dompdf->stream($filename, ["Attachment" => false]);
 
-        exit(); // Detenemos la ejecución del script después de enviar el archivo
+        exit();
     }
-
 }

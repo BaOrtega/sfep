@@ -10,7 +10,6 @@ class FacturaModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType     = 'array';
     
-    // Campos permitidos, reflejando la estructura de tu CREATE TABLE
     protected $allowedFields = [
         'cliente_id', 
         'usuario_id',
@@ -20,6 +19,33 @@ class FacturaModel extends Model
         'total_impuestos', 
         'total_factura', 
         'moneda', 
-        'estado',
+        'estado'
+        // NO incluir 'created_at' - la tabla no lo tiene
     ];
+    
+    protected $useTimestamps = false;
+    
+    protected $validationRules = [
+        'cliente_id'        => 'required|is_not_unique[clientes.id]',
+        'usuario_id'        => 'required|is_not_unique[usuarios.id]',
+        'fecha_emision'     => 'required|valid_date',
+        'fecha_vencimiento' => 'required|valid_date',
+        'subtotal'          => 'required|decimal',
+        'total_impuestos'   => 'required|decimal',
+        'total_factura'     => 'required|decimal|greater_than[0]',
+        'estado'            => 'required|in_list[EMITIDA,PAGADA,ANULADA]',
+        'moneda'            => 'required|max_length[3]'
+    ];
+    
+    protected $validationMessages = [
+        'cliente_id' => [
+            'required' => 'El cliente es requerido',
+            'is_not_unique' => 'El cliente seleccionado no existe'
+        ],
+        'total_factura' => [
+            'greater_than' => 'El total debe ser mayor a 0'
+        ]
+    ];
+    
+    protected $skipValidation = false;
 }
