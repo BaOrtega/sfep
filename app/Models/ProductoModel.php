@@ -21,7 +21,7 @@ class ProductoModel extends Model
         'activo',
     ];
 
-    // Reglas de validación CORREGIDAS - sin placeholders
+    // Reglas de validación
     protected $validationRules = [
         'nombre'         => 'required|min_length[3]',
         'precio_unitario'=> 'required|decimal|greater_than_equal_to[0]',

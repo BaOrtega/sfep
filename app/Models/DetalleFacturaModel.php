@@ -18,7 +18,6 @@ class DetalleFacturaModel extends Model
         'precio_unitario',
         'tasa_impuesto',
         'total_linea'
-        // NO incluir 'created_at' - la tabla no lo tiene
     ];
     
     protected $useTimestamps = false;

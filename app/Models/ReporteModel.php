@@ -68,7 +68,7 @@ class ReporteModel extends Model
         ');
         $builder->join('productos p', 'p.id = df.producto_id');
         $builder->join('facturas f', 'f.id = df.factura_id');
-        $builder->where('f.estado', 'PAGADA'); // Solo facturas pagadas
+        $builder->where('f.estado', 'PAGADA');
         $builder->groupBy('df.producto_id, p.nombre, p.precio_unitario');
         $builder->orderBy('total_cantidad_vendida', 'DESC');
         $builder->limit($limit);

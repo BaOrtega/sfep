@@ -20,7 +20,6 @@ class FacturaModel extends Model
         'total_factura', 
         'moneda', 
         'estado'
-        // NO incluir 'created_at' - la tabla no lo tiene
     ];
     
     protected $useTimestamps = false;
@@ -48,4 +47,55 @@ class FacturaModel extends Model
     ];
     
     protected $skipValidation = false;
+
+    /**
+     * Obtener facturas por usuario (para vendedor)
+     */
+    public function getByUsuario($usuario_id)
+    {
+        return $this->where('usuario_id', $usuario_id)
+                    ->orderBy('fecha_emision', 'DESC')
+                    ->findAll();
+    }
+    
+    /**
+     * Obtener estadísticas por usuario
+     */
+    public function getStatsByUsuario($usuario_id)
+    {
+        $stats = [
+            'total' => $this->where('usuario_id', $usuario_id)->countAllResults(),
+            'emitidas' => $this->where('usuario_id', $usuario_id)
+                              ->where('estado', 'EMITIDA')
+                              ->countAllResults(),
+            'pagadas' => $this->where('usuario_id', $usuario_id)
+                             ->where('estado', 'PAGADA')
+                             ->countAllResults(),
+            'anuladas' => $this->where('usuario_id', $usuario_id)
+                              ->where('estado', 'ANULADA')
+                              ->countAllResults(),
+        ];
+        
+        $totalVentas = $this->selectSum('total_factura')
+                           ->where('usuario_id', $usuario_id)
+                           ->where('estado', 'PAGADA')
+                           ->first();
+        
+        $stats['total_ventas'] = $totalVentas['total_factura'] ?? 0;
+        
+        return $stats;
+    }
+    
+    /**
+     * Verificar si una factura pertenece a un usuario
+     */
+    public function belongsToUsuario($factura_id, $usuario_id)
+    {
+        $factura = $this->where('id', $factura_id)
+                       ->where('usuario_id', $usuario_id)
+                       ->first();
+        
+        return $factura !== null;
+    }
+
 }

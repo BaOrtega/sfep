@@ -505,10 +505,6 @@
                 }
             });
         }
-
-        // Actualizar cada minuto (opcional)
-        // setInterval(actualizarEstadosVencimiento, 60000);
-
         // Ejecutar al cargar la página
         document.addEventListener('DOMContentLoaded', actualizarEstadosVencimiento);
     </script>

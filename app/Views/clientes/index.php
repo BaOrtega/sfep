@@ -415,16 +415,6 @@
                                     <input type="text" class="form-control border-0" placeholder="Buscar clientes por nombre, NIT o email...">
                                 </div>
                             </div>
-                            <!--<div class="col-md-4">
-                                <div class="d-flex gap-2 justify-content-end">
-                                    <button class="btn btn-outline-primary">
-                                        <i class="bi bi-funnel"></i> Filtros
-                                    </button>
-                                    <!--<button class="btn btn-outline-secondary">
-                                        <i class="bi bi-download"></i> Exportar
-                                    </button> 
-                                </div>
-                            </div>-->
                         </div>
                     </div>
 

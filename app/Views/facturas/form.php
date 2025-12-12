@@ -576,7 +576,6 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <!-- Las filas se añadirán dinámicamente aquí -->
                                     </tbody>
                                 </table>
                             </div>

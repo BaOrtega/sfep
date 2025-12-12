@@ -8,7 +8,11 @@ class ProductoController extends BaseController
 
     public function __construct()
     {
+        parent::__construct();
         $this->productoModel = new ProductoModel();
+        
+        // Verificar permisos - ambos roles pueden acceder
+        $this->checkPermission(['admin', 'vendedor']);
     }
 
     // [READ] LISTAR productos
@@ -17,7 +21,7 @@ class ProductoController extends BaseController
         $data['productos'] = $this->productoModel->findAll();
         $data['title'] = "Inventario de Productos y Servicios";
         
-        return view('productos/index', $data);
+        return $this->renderView('productos/index', $data);
     }
 
     // [CREATE] FORMULARIO DE CREACIÓN
@@ -25,7 +29,7 @@ class ProductoController extends BaseController
     {
         $data['title'] = "Nuevo Producto/Servicio";
         $data['iva_default'] = 19; 
-        return view('productos/form', $data);
+        return $this->renderView('productos/form', $data);
     }
 
     // [CREATE/UPDATE] GUARDAR O ACTUALIZAR
@@ -37,13 +41,11 @@ class ProductoController extends BaseController
         
         // Validación manual para nombre único
         if ($id) {
-            // En edición: verificar si el nombre ya existe excluyendo el actual
             $existing = $this->productoModel
                 ->where('nombre', $nombre)
                 ->where('id !=', $id)
                 ->first();
         } else {
-            // En creación: verificar si el nombre ya existe
             $existing = $this->productoModel->where('nombre', $nombre)->first();
         }
         
@@ -61,7 +63,7 @@ class ProductoController extends BaseController
         }
 
         $message = $id ? 'Producto actualizado correctamente.' : 'Producto creado correctamente.';
-        session()->setFlashdata('success', $message);
+        $this->session->setFlashdata('success', $message);
         return redirect()->to('/productos');
     }
 
@@ -77,16 +79,17 @@ class ProductoController extends BaseController
         $data['producto'] = $producto;
         $data['title'] = "Editar Producto/Servicio";
         
-        return view('productos/form', $data);
+        return $this->renderView('productos/form', $data);
     }
 
     // [DELETE] ELIMINAR
     public function delete($id)
     {
+        // Solo admin puede eliminar (verificado por filtro de ruta)
         if ($this->productoModel->delete($id)) {
-            session()->setFlashdata('success', 'Producto/Servicio eliminado con éxito.');
+            $this->session->setFlashdata('success', 'Producto/Servicio eliminado con éxito.');
         } else {
-            session()->setFlashdata('error', 'No se pudo eliminar el Producto/Servicio.');
+            $this->session->setFlashdata('error', 'No se pudo eliminar el Producto/Servicio.');
         }
         
         return redirect()->to('/productos');

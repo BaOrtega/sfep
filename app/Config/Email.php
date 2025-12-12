@@ -6,8 +6,12 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail  = '';
-    public string $fromName   = '';
+    /**
+     * Correo remitente - Puede ser cualquier correo
+     * Los usuarios verán esto como "De: Sistema de Facturación <sistema@facturacion.com>"
+     */
+    public string $fromEmail  = 'sistema@facturacion.com';
+    public string $fromName   = 'Sistema de Facturación';
     public string $recipients = '';
 
     /**
@@ -16,39 +20,23 @@ class Email extends BaseConfig
     public string $userAgent = 'CodeIgniter';
 
     /**
-     * The mail sending protocol: mail, sendmail, smtp
+     * Protocolo SMTP para Mailtrap
      */
-    public string $protocol = 'mail';
+    public string $protocol = 'smtp';
 
     /**
-     * The server path to Sendmail.
+     * The server path to Sendmail (no se usa con SMTP)
      */
     public string $mailPath = '/usr/sbin/sendmail';
 
     /**
-     * SMTP Server Hostname
+     * CONFIGURACIÓN MAILTRAP CON TUS DATOS
      */
-    public string $SMTPHost = '';
-
-    /**
-     * SMTP Username
-     */
-    public string $SMTPUser = '';
-
-    /**
-     * SMTP Password
-     */
-    public string $SMTPPass = '';
-
-    /**
-     * SMTP Port
-     */
-    public int $SMTPPort = 25;
-
-    /**
-     * SMTP Timeout (in seconds)
-     */
-    public int $SMTPTimeout = 5;
+    public string $SMTPHost = 'sandbox.smtp.mailtrap.io';
+    public string $SMTPUser = '19721b6f27fec8';  // Tu usuario
+    public string $SMTPPass = 'e129';            // Tu contraseña
+    public int $SMTPPort = 587;                   // Puerto recomendado
+    public int $SMTPTimeout = 30;                 // Aumentado para pruebas
 
     /**
      * Enable persistent SMTP connections
@@ -56,11 +44,7 @@ class Email extends BaseConfig
     public bool $SMTPKeepAlive = false;
 
     /**
-     * SMTP Encryption.
-     *
-     * @var string '', 'tls' or 'ssl'. 'tls' will issue a STARTTLS command
-     *             to the server. 'ssl' means implicit SSL. Connection on port
-     *             465 should set this to ''.
+     * SMTP Encryption - TLS para puerto 587
      */
     public string $SMTPCrypto = 'tls';
 
@@ -75,9 +59,9 @@ class Email extends BaseConfig
     public int $wrapChars = 76;
 
     /**
-     * Type of mail, either 'text' or 'html'
+     * Type of mail - HTML para correos con formato
      */
-    public string $mailType = 'text';
+    public string $mailType = 'html';
 
     /**
      * Character set (utf-8, iso-8859-1, etc.)
@@ -86,21 +70,22 @@ class Email extends BaseConfig
 
     /**
      * Whether to validate the email address
+     * En desarrollo puedes poner false
      */
     public bool $validate = false;
 
     /**
      * Email Priority. 1 = highest. 5 = lowest. 3 = normal
      */
-    public int $priority = 3;
+    public int $priority = 1; // Alta prioridad para recuperación de contraseña
 
     /**
-     * Newline character. (Use “\r\n” to comply with RFC 822)
+     * Newline character. (Use "\r\n" to comply with RFC 822)
      */
     public string $CRLF = "\r\n";
 
     /**
-     * Newline character. (Use “\r\n” to comply with RFC 822)
+     * Newline character. (Use "\r\n" to comply with RFC 822)
      */
     public string $newline = "\r\n";
 
@@ -118,4 +103,17 @@ class Email extends BaseConfig
      * Enable notify message from server
      */
     public bool $DSN = false;
+
+    /**
+     * SMTP Debug level
+     * 0 = off (producción)
+     * 1 = client messages
+     * 2 = client and server messages (desarrollo)
+     */
+    public int $SMTPDebug = 2; // Activar para ver errores detallados
+
+    /**
+     * Whether to throw exceptions on errors
+     */
+    public bool $throwExceptions = false; // Mejor false para controlar errores
 }

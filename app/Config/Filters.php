@@ -16,13 +16,13 @@ use CodeIgniter\Filters\SecureHeaders;
 class Filters extends BaseFilters
 {
     /**
-     * Configures aliases for Filter classes to
-     * make reading things nicer and simpler.
+     * Configura aliases para las clases de Filtros.
+     * Hace la lectura más simple y ordenada.
      *
      * @var array<string, class-string|list<class-string>>
-     *
-     * [filter_name => classname]
-     * or [filter_name => [classname1, classname2, ...]]
+     * 
+     * [nombre_filtro => nombre_clase]
+     * o [nombre_filtro => [clase1, clase2, ...]]
      */
     public array $aliases = [
         'csrf'          => CSRF::class,
@@ -34,17 +34,21 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-        'auth' => \App\Filters\AuthFilter::class,
+        
+        // Nuestros filtros personalizados
+        'auth'          => \App\Filters\AuthFilter::class,    // Verifica autenticación
+        'role'          => \App\Filters\RoleFilter::class,    // Verifica roles específicos
+        'admin'         => \App\Filters\AdminFilter::class,   // Verifica que sea admin
     ];
 
     /**
-     * List of special required filters.
+     * Lista de filtros especiales requeridos.
      *
-     * The filters listed here are special. They are applied before and after
-     * other kinds of filters, and always applied even if a route does not exist.
+     * Estos filtros son especiales. Se aplican antes y después
+     * de otros tipos de filtros, y siempre se aplican incluso si una ruta no existe.
      *
-     * Filters set by default provide framework functionality. If removed,
-     * those functions will no longer work.
+     * Los filtros establecidos por defecto proporcionan funcionalidad del framework.
+     * Si se eliminan, esas funciones dejarán de funcionar.
      *
      * @see https://codeigniter.com/user_guide/incoming/filters.html#provided-filters
      *
@@ -52,19 +56,16 @@ class Filters extends BaseFilters
      */
     public array $required = [
         'before' => [
-            'forcehttps', // Force Global Secure Requests
-            'pagecache',  // Web Page Caching
+            // 'forcehttps', // Forzar HTTPS globalmente (activar en producción)
         ],
         'after' => [
-            'pagecache',   // Web Page Caching
-            'performance', // Performance Metrics
-            'toolbar',     // Debug Toolbar
+            'toolbar', // Barra de depuración
         ],
     ];
 
     /**
-     * List of filter aliases that are always
-     * applied before and after every request.
+     * Lista de aliases de filtros que se aplican siempre
+     * antes y después de cada solicitud.
      *
      * @var array{
      *     before: array<string, array{except: list<string>|string}>|list<string>,
@@ -73,46 +74,47 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            'auth' => [
-            'except' => [
-                'login', 
-                'attemptLogin',
-                'logout',
-                'register', 
-                'attemptRegister',
-                '/', 
-            ]
-        ]
+            // CSRF: Protección contra Cross-Site Request Forgery
+            // Activar solo si no tienes API externa
+            // 'csrf' => ['except' => ['api/*']],
+            
+            // IMPORTANTE: NO apliques 'auth' globalmente aquí
+            // Esto causaría bucle infinito en rutas públicas
         ],
         'after' => [
-            // 'honeypot',
-            // 'secureheaders',
+            // 'honeypot', // Protección contra bots
+            // 'secureheaders', // Headers de seguridad
         ],
     ];
 
     /**
-     * List of filter aliases that works on a
-     * particular HTTP method (GET, POST, etc.).
+     * Lista de aliases de filtros que funcionan en
+     * un método HTTP particular (GET, POST, etc.).
      *
-     * Example:
+     * Ejemplo:
      * 'POST' => ['foo', 'bar']
      *
-     * If you use this, you should disable auto-routing because auto-routing
-     * permits any HTTP method to access a controller. Accessing the controller
-     * with a method you don't expect could bypass the filter.
+     * Si usas esto, deberías desactivar auto-routing porque auto-routing
+     * permite cualquier método HTTP para acceder a un controlador.
      *
      * @var array<string, list<string>>
      */
-    public array $methods = [];
+    public array $methods = [
+        // Ejemplo: aplicar filtro a métodos POST específicos
+        // 'post' => ['csrf', 'auth'],
+    ];
 
     /**
-     * List of filter aliases that should run on any
-     * before or after URI patterns.
+     * Lista de aliases de filtros que deberían ejecutarse en
+     * patrones URI específicos (antes o después).
      *
-     * Example:
+     * Ejemplo:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        // Los filtros se aplicarán directamente en las rutas
+        // Esta sección se deja vacía para evitar conflictos
+    ];
 }

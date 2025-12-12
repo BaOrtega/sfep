@@ -18,8 +18,8 @@ class ClienteModel extends Model
     // Reglas de validación
     protected $validationRules = [
         'nombre'  => 'required|min_length[3]',
-        'nit'     => 'required|min_length[5]', // Clave: NIT debe ser único (excluyendo el propio registro en edición)
-        'email'   => 'permit_empty|valid_email', // Email es opcional, pero si existe, debe ser válido
+        'nit'     => 'required|min_length[5]',
+        'email'   => 'permit_empty|valid_email',
     ];
 
     protected $validationMessages = [

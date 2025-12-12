@@ -142,7 +142,7 @@
             border-left-color: #dc3545;
         }
         
-        .stat-card.reports {
+        .stat-card.sales {
             border-left-color: #6f42c1;
         }
         
@@ -217,6 +217,24 @@
         .btn-action-horizontal span {
             font-weight: 600;
             font-size: 1rem;
+        }
+        
+        /* Opciones de admin en sidebar */
+        .admin-only {
+            border-left: 3px solid #dc3545;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .admin-only-title {
+            color: #dc3545;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            padding-left: 15px;
         }
 
         /* Responsive */
@@ -307,26 +325,47 @@
                     <i class="bi bi-receipt me-3"></i>Factura
                 </a>
             </div>
-            <div class="nav-item">
-                <a href="<?= url_to('reportes_index') ?>">
-                    <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
-                </a>
+            
+            <?php if (session()->get('rol') === 'admin'): ?>
+            <!-- Sección solo para administradores -->
+            <div class="admin-only">
+                <div class="admin-only-title">
+                    <i class="bi bi-shield-lock me-1"></i> Administración
+                </div>
+                <div class="nav-item">
+                    <a href="<?= url_to('reportes_index') ?>">
+                        <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="<?= url_to('usuarios_index') ?>">
+                        <i class="bi bi-people-fill me-3"></i>Usuarios
+                    </a>
+                </div>
             </div>
+            <?php endif; ?>
         </nav>
         
         <div class="user-info">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <p class="mb-1 fw-bold"><?= esc(session()->get('user_name')) ?></p>
-                    <small class="text-muted">Usuario activo</small>
+                    <small class="text-muted">
+                        <?= session()->get('rol') === 'admin' ? 'Administrador' : 'Vendedor' ?>
+                    </small>
                 </div>
                 <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                     <i class="bi bi-person"></i>
                 </div>
             </div>
-            <a href="<?= url_to('logout') ?>" class="btn btn-outline-danger w-100">
-                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-            </a>
+            <div class="d-grid gap-2">
+                <a href="<?= url_to('profile') ?>" class="btn btn-outline-primary">
+                    <i class="bi bi-person-circle me-2"></i>Mi Perfil
+                </a>
+                <a href="<?= url_to('logout') ?>" class="btn btn-outline-danger">
+                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                </a>
+            </div>
         </div>
     </div>
 
@@ -338,10 +377,17 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h1 class="mb-3">👋 ¡Bienvenido, <?= esc(session()->get('user_name')) ?>!</h1>
-                        <p class="mb-4 opacity-90">Gestiona tu negocio de manera eficiente desde el dashboard principal.</p>
+                        <p class="mb-4 opacity-90">
+                            <?php if (session()->get('rol') === 'admin'): ?>
+                                Administrador del Sistema de Facturación Electrónica
+                            <?php else: ?>
+                                Vendedor del Sistema de Facturación Electrónica
+                            <?php endif; ?>
+                        </p>
                     </div>
                     <div class="col-md-4 text-center">
-                        <i class="bi bi-shield-check" style="font-size: 6rem; opacity: 0.8;"></i>
+                        <i class="bi bi-<?= session()->get('rol') === 'admin' ? 'shield-check' : 'person-badge' ?>" 
+                           style="font-size: 6rem; opacity: 0.8;"></i>
                     </div>
                 </div>
                 
@@ -353,16 +399,24 @@
                     </a>
                     <a href="<?= url_to('facturas_index') ?>" class="btn-action-horizontal">
                         <i class="bi bi-receipt"></i>
-                        <span>Factura</span>
+                        <span>Crear Factura</span>
                     </a>
                     <a href="<?= url_to('productos_index') ?>" class="btn-action-horizontal">
                         <i class="bi bi-box-seam"></i>
                         <span>Ver Productos</span>
                     </a>
+                    
+                    <?php if (session()->get('rol') === 'admin'): ?>
                     <a href="<?= url_to('reportes_index') ?>" class="btn-action-horizontal">
                         <i class="bi bi-bar-chart"></i>
                         <span>Ver Reportes</span>
                     </a>
+                    <?php else: ?>
+                    <a href="<?= url_to('profile') ?>" class="btn-action-horizontal">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Mi Perfil</span>
+                    </a>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -388,18 +442,60 @@
                     <div class="stat-icon text-danger">
                         <i class="bi bi-receipt"></i>
                     </div>
-                    <div class="stat-number text-danger"></div>
+                    <div class="stat-number text-danger"><?= $totalFacturas ?? 0 ?></div>
                     <div class="stat-title">Facturas Emitidas</div>
                 </div>
                 
-                <div class="stat-card reports">
+                <div class="stat-card sales">
                     <div class="stat-icon text-primary">
-                        <i class="bi bi-bar-chart"></i>
+                        <i class="bi bi-currency-dollar"></i>
                     </div>
-                    <div class="stat-number text-primary">0</div>
-                    <div class="stat-title">Reportes Generados</div>
+                    <div class="stat-number text-primary">$<?= number_format($totalVentas ?? 0, 0, ',', '.') ?></div>
+                    <div class="stat-title">Ventas Totales</div>
                 </div>
             </div>
+
+            <!-- Facturas Recientes -->
+            <?php if (isset($facturasRecientes) && !empty($facturasRecientes)): ?>
+            <div class="card card-main">
+                <div class="card-header-custom">
+                    <h4><i class="bi bi-clock-history me-2"></i>Facturas Recientes</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($facturasRecientes as $factura): ?>
+                                <tr>
+                                    <td>#<?= $factura['id'] ?></td>
+                                    <td><?= esc($factura['cliente_nombre'] ?? 'N/A') ?></td>
+                                    <td><?= date('d/m/Y', strtotime($factura['fecha_emision'])) ?></td>
+                                    <td>$<?= number_format($factura['total_factura'], 2, ',', '.') ?></td>
+                                    <td>
+                                        <span class="badge bg-<?= 
+                                            $factura['estado'] == 'PAGADA' ? 'success' : 
+                                            ($factura['estado'] == 'EMITIDA' ? 'warning' : 'danger')
+                                        ?>">
+                                            <?= $factura['estado'] ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 

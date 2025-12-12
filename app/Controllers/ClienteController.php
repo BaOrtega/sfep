@@ -8,8 +8,11 @@ class ClienteController extends BaseController
 
     public function __construct()
     {
-        // Inicializa el modelo al crear el controlador
+        parent::__construct();
         $this->clienteModel = new ClienteModel();
+        
+        // Verificar permisos - ambos roles pueden acceder
+        $this->checkPermission(['admin', 'vendedor']);
     }
 
     // [READ] LISTAR clientes 
@@ -18,16 +21,14 @@ class ClienteController extends BaseController
         $data['clientes'] = $this->clienteModel->findAll();
         $data['title'] = "Gestión de Clientes";
         
-        // Muestra la vista de listado
-        return view('clientes/index', $data);
+        return $this->renderView('clientes/index', $data);
     }
 
     // [CREATE] FORMULARIO DE CREACIÓN
     public function new()
     {
         $data['title'] = "Nuevo Cliente";
-        // Muestra la vista del formulario (vacío)
-        return view('clientes/form', $data);
+        return $this->renderView('clientes/form', $data);
     }
 
     // [CREATE/UPDATE] GUARDAR O ACTUALIZAR
@@ -35,13 +36,10 @@ class ClienteController extends BaseController
     {
         // El método save() del modelo se encarga de la validación y de la lógica INSERT/UPDATE
         if (! $this->clienteModel->save($this->request->getPost())) {
-            
-            // Si la validación falla, regresa con errores
             return redirect()->back()->withInput()->with('errors', $this->clienteModel->errors());
         }
 
-        session()->setFlashdata('success', 'Cliente guardado con éxito.');
-        // Redirige al listado
+        $this->session->setFlashdata('success', 'Cliente guardado con éxito.');
         return redirect()->to('/clientes');
     }
 
@@ -57,20 +55,25 @@ class ClienteController extends BaseController
         $data['cliente'] = $cliente;
         $data['title'] = "Editar Cliente";
         
-        
-        // Muestra la vista del formulario (precargado con datos)
-        return view('/clientes/form', $data);
+        return $this->renderView('clientes/form', $data);
     }
 
     // [DELETE] ELIMINAR
     public function delete($id)
     {
         if ($this->clienteModel->delete($id)) {
-            session()->setFlashdata('success', 'Cliente eliminado con éxito.');
+            $this->session->setFlashdata('success', 'Cliente eliminado con éxito.');
         } else {
-            session()->setFlashdata('error', 'No se pudo eliminar el cliente.');
+            $this->session->setFlashdata('error', 'No se pudo eliminar el cliente.');
         }
         
         return redirect()->to('/clientes');
+    }
+    
+    // Cantidad de clientes (para AJAX/dashboard)
+    public function cantidadClientes()
+    {
+        $total = $this->clienteModel->countAll();
+        return $this->response->setJSON(['total' => $total]);
     }
 }
