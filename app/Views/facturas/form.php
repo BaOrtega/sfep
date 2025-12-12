@@ -8,270 +8,278 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --sidebar-width: 280px;
-            --main-padding: 30px;
-            --primary-gradient: linear-gradient(135deg, #007bff, #0056b3);
-            --success-gradient: linear-gradient(135deg, #28a745, #20c997);
-            --warning-gradient: linear-gradient(135deg, #ffc107, #fd7e14);
-            --danger-gradient: linear-gradient(135deg, #dc3545, #c82333);
+            --primary-color: #1a5fb4;
+            --secondary-color: #2d3748;
+            --accent-color: #0ea5e9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-color);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
         }
         
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transition: transform 0.3s ease;
-        }
-        
+        /* Main Content */
         .main-content {
-            margin-left: var(--sidebar-width);
-            padding: var(--main-padding);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .content-center {
+            padding: 2rem;
             max-width: 1400px;
             margin: 0 auto;
-            width: 100%;
         }
         
-        .logo {
-            font-size: 1.8em;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 30px;
-            text-align: center;
+        /* Header Card */
+        .header-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
         }
         
-        .nav-item a {
-            color: #495057;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .nav-item a:hover {
-            background: var(--primary-gradient);
-            color: white;
-            transform: translateX(5px);
-        }
-        
-        .nav-item a.active {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-        }
-        
-        .user-info {
+        .header-card::before {
+            content: '';
             position: absolute;
-            bottom: 30px;
-            width: calc(100% - 50px);
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, rgba(26, 95, 180, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+            border-radius: 50%;
+            transform: translate(40%, -40%);
         }
         
-        .card-main {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .header-card h1 {
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-card .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
             border: none;
             overflow: hidden;
-            margin-bottom: 25px;
+            margin-bottom: 2rem;
+            transition: var(--transition);
         }
         
-        .card-header-custom {
-            background: var(--primary-gradient);
+        .form-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0c4a9e 100%);
             color: white;
-            padding: 25px;
+            padding: 1.5rem 2rem;
             border-bottom: none;
+            position: relative;
+            overflow: hidden;
         }
         
-        .btn-modern {
-            background: var(--success-gradient);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+        
+        .form-header h3 {
             font-weight: 600;
-            transition: all 0.3s ease;
-            color: white;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            margin: 0;
+            position: relative;
+            z-index: 1;
         }
         
-        .btn-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
-            color: white;
+        .form-header i {
+            margin-right: 0.75rem;
         }
         
-        .btn-primary-custom {
-            background: var(--primary-gradient);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-            color: white;
-        }
-        
-        .btn-back {
-            background: #6c757d;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-back:hover {
-            background: #5a6268;
-            color: white;
-            transform: translateY(-2px);
+        /* Form Sections */
+        .form-body {
+            padding: 2rem;
         }
         
         .form-section {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .form-section:hover {
+            transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
         }
         
         .section-header {
             display: flex;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f1f3f4;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
         }
         
         .section-header h4 {
             margin: 0;
-            color: #495057;
+            color: var(--dark-color);
             font-weight: 600;
         }
         
         .section-header i {
-            color: #007bff;
-            margin-right: 10px;
-            font-size: 1.2em;
+            color: var(--primary-color);
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
         }
         
+        /* Form Controls */
         .form-label {
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: var(--danger-color);
         }
         
         .form-control, .form-select {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 12px 15px;
-            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
         }
         
         .form-control:focus, .form-select:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(14, 165, 233, 0.1);
+            transform: translateY(-1px);
         }
         
-        .input-group-custom {
-            border-radius: 10px;
-            overflow: hidden;
+        .input-group-text {
+            background-color: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            font-weight: 500;
         }
         
+        /* Product Selector */
+        .product-selector-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px dashed #cbd5e1;
+        }
+        
+        /* Table Styles */
         .table-modern {
             background: white;
-            border-radius: 15px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            margin-bottom: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
         
         .table-modern thead {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         }
         
         .table-modern th {
             border: none;
-            padding: 15px;
+            padding: 1rem 1.5rem;
             font-weight: 600;
-            color: #495057;
+            color: var(--dark-color);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .table-modern td {
             border: none;
-            padding: 15px;
+            padding: 1rem 1.5rem;
             vertical-align: middle;
-            border-bottom: 1px solid #f1f3f4;
+            border-bottom: 1px solid #f1f5f9;
         }
         
         .table-modern tbody tr {
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
         
         .table-modern tbody tr:hover {
-            background-color: #f8f9fa;
+            background-color: #f8fafc;
         }
         
-        .alert-modern {
-            border-radius: 15px;
+        /* Quantity Input */
+        .input-number {
+            width: 80px;
+            text-align: center;
+        }
+        
+        /* Delete Button */
+        .btn-delete-line {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
             border: none;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            color: white;
+            transition: var(--transition);
         }
         
+        .btn-delete-line:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.3);
+            color: white;
+        }
+        
+        /* Total Box */
         .total-box {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 15px;
-            padding: 30px;
-            margin-top: 25px;
-            border: 2px solid #e9ecef;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 2px solid #e2e8f0;
         }
         
         .total-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
         }
         
         .total-row:last-child {
@@ -282,219 +290,232 @@
         
         .total-label {
             font-size: 1rem;
-            color: #6c757d;
+            color: #64748b;
             font-weight: 500;
         }
         
         .total-value {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #495057;
+            color: var(--dark-color);
         }
         
         .grand-total {
             font-size: 1.5rem;
-            color: #007bff;
+            color: var(--primary-color);
             font-weight: 700;
         }
         
-        .product-selector-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 2px dashed #dee2e6;
-        }
-        
-        .input-number {
-            width: 80px;
-            text-align: center;
-        }
-        
-        .btn-delete-line {
-            background: var(--danger-gradient);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-delete-line:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
-        
+        /* Empty Table Message */
         .empty-table-message {
             text-align: center;
-            padding: 40px 20px;
-            color: #6c757d;
+            padding: 3rem 1rem;
+            color: #64748b;
         }
         
         .empty-table-message i {
             font-size: 3rem;
-            margin-bottom: 15px;
+            margin-bottom: 1rem;
             opacity: 0.5;
         }
-
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .btn-back {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            flex: 1;
+        }
+        
+        .btn-back:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: var(--dark-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0c4a9e 100%);
+            border: none;
+            color: white;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            flex: 1;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(26, 95, 180, 0.25);
+            color: white;
+        }
+        
+        /* Alerts */
+        .alert-modern {
+            border-radius: var(--border-radius);
+            border: none;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .alert-modern.alert-danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-left: 4px solid var(--danger-color);
+            color: var(--dark-color);
+        }
+        
+        .alert-modern.alert-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-left: 4px solid var(--success-color);
+            color: var(--dark-color);
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
             .main-content {
-                margin-left: 0;
-                padding: 15px;
+                padding: 1rem;
             }
             
-            .table-modern th, 
+            .header-card {
+                padding: 1.5rem;
+            }
+            
+            .form-body {
+                padding: 1.5rem;
+            }
+            
+            .form-section {
+                padding: 1.25rem;
+            }
+            
+            .table-modern th,
             .table-modern td {
-                padding: 10px 8px;
+                padding: 0.75rem 1rem;
                 font-size: 0.85rem;
             }
             
-            .menu-toggle {
-                display: block;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 1001;
-                background: rgba(255, 255, 255, 0.9);
-                border: none;
-                border-radius: 8px;
-                padding: 8px 12px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            .action-buttons {
+                flex-direction: column;
             }
             
-            .total-box {
-                padding: 20px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .menu-toggle {
-                display: none;
+            .product-selector-card {
+                padding: 1rem;
             }
         }
         
         @media (max-width: 576px) {
-            .form-section {
-                padding: 15px;
+            .header-card h1 {
+                font-size: 1.5rem;
             }
             
-            .btn-modern, 
-            .btn-primary-custom {
-                padding: 10px 15px;
-                font-size: 0.9rem;
+            .form-header h3 {
+                font-size: 1.25rem;
             }
             
-            .table-modern {
-                font-size: 0.85rem;
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .input-number {
+                width: 60px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Menu Toggle Mobile -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo">PFEP</div>
-        <hr style="border-color: #e9ecef; margin: 20px 0;">
-        <nav>
-            <div class="nav-item">
-                <a href="<?= url_to('dashboard') ?>">
-                    <i class="bi bi-house me-3"></i>Dashboard
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('clientes_index') ?>">
-                    <i class="bi bi-people me-3"></i>Clientes
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('productos_index') ?>">
-                    <i class="bi bi-box-seam me-3"></i>Productos
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('facturas_index') ?>" class="active">
-                    <i class="bi bi-receipt me-3"></i>Facturas
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('reportes_index') ?>">
-                    <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
-                </a>
-            </div>
-        </nav>
-        
-        <div class="user-info">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <p class="mb-1 fw-bold"><?= esc(session()->get('user_name')) ?></p>
-                    <small class="text-muted">Usuario activo</small>
-                </div>
-                <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                    <i class="bi bi-person"></i>
-                </div>
-            </div>
-            <a href="<?= url_to('logout') ?>" class="btn btn-outline-danger w-100">
-                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-            </a>
-        </div>
-    </div>
+    <?php if (file_exists(APPPATH . 'Views/partials/navbar.php')): ?>
+        <?= view('partials/navbar') ?>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="content-center">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Header Card -->
+        <div class="header-card">
+            <div class="d-flex justify-content-between align-items-start flex-wrap">
                 <div>
-                    <h1 class="text-white mb-2">🧾 Crear Nueva Factura</h1>
-                    <p class="text-white opacity-90 mb-0">Complete los datos para generar una nueva factura</p>
+                    <h1 class="display-6 mb-2">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>
+                        Crear Nueva Factura
+                    </h1>
+                    <p class="subtitle mb-0">
+                        Complete los datos para generar una nueva factura
+                    </p>
                 </div>
-                <a href="<?= url_to('facturas_index') ?>" class="btn-back">
-                    <i class="bi bi-arrow-left me-2"></i>Volver a Facturas
+                <a href="<?= url_to('facturas_index') ?>" class="btn-back" style="flex: 0 0 auto; width: auto;">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Volver a Facturas
                 </a>
             </div>
+        </div>
 
-            <div class="card-main">
-                <div class="card-header-custom">
-                    <h3 class="mb-0"><i class="bi bi-file-text me-2"></i>Datos de la Factura</h3>
-                </div>
-                <div class="card-body p-4">
-                    <?php $action = url_to('facturas_save'); ?>
-                    <form action="<?= esc($action) ?>" method="post" id="facturaForm">
-                        <?= csrf_field() ?>
-                        
-                        <!-- Alertas -->
-                        <?php if (session()->getFlashdata('error')): ?>
-                            <div class="alert alert-danger alert-modern alert-dismissible fade show" role="alert">
-                                <i class="bi bi-exclamation-circle-fill me-2"></i>
-                                <?= session()->getFlashdata('error') ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        <?php endif; ?>
+        <!-- Form Card -->
+        <div class="form-card">
+            <!-- Form Header -->
+            <div class="form-header">
+                <h3>
+                    <i class="fas fa-file-alt me-2"></i>
+                    Datos de la Factura
+                </h3>
+            </div>
 
-                        <!-- Sección Datos Principales -->
-                        <div class="form-section">
-                            <div class="section-header">
-                                <i class="bi bi-info-circle"></i>
-                                <h4>Información Principal</h4>
+            <!-- Form Body -->
+            <div class="form-body">
+                <?php $action = url_to('facturas_save'); ?>
+                <form action="<?= esc($action) ?>" method="post" id="facturaForm">
+                    <?= csrf_field() ?>
+                    
+                    <!-- Alertas -->
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div class="alert alert-danger alert-modern alert-dismissible fade show" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle fa-lg me-3"></i>
+                                <div>
+                                    <h5 class="alert-heading mb-1">Error</h5>
+                                    <p class="mb-0"><?= session()->getFlashdata('error') ?></p>
+                                </div>
                             </div>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="cliente_id" class="form-label">Cliente *</label>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Sección Datos Principales -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-info-circle"></i>
+                            <h4>Información Principal</h4>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="cliente_id" class="form-label required-field">Cliente</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
                                     <select id="cliente_id" name="cliente_id" class="form-select" required>
                                         <option value="">Seleccione un Cliente</option>
                                         <?php foreach ($clientes as $cliente): ?>
@@ -504,31 +525,46 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <label for="fecha_emision" class="form-label">Fecha Emisión *</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="fecha_emision" class="form-label required-field">Fecha Emisión</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
                                     <input type="date" id="fecha_emision" name="fecha_emision" class="form-control" 
                                            value="<?= old('fecha_emision', $fecha_emision) ?>" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label for="fecha_vencimiento" class="form-label">Fecha Vencimiento *</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="fecha_vencimiento" class="form-label required-field">Fecha Vencimiento</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calendar-times"></i>
+                                    </span>
                                     <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" class="form-control" 
                                            value="<?= old('fecha_vencimiento', $fecha_vencimiento) ?>" required>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Sección Detalle de Productos -->
-                        <div class="form-section">
-                            <div class="section-header">
-                                <i class="bi bi-cart-plus"></i>
-                                <h4>Detalle de Productos/Servicios</h4>
-                            </div>
-                            
-                            <!-- Selector de Productos -->
-                            <div class="product-selector-card">
-                                <div class="row g-3">
-                                    <div class="col-md-8">
-                                        <label for="producto_selector" class="form-label">Seleccionar Producto</label>
+                    <!-- Sección Detalle de Productos -->
+                    <div class="form-section">
+                        <div class="section-header">
+                            <i class="fas fa-cart-plus"></i>
+                            <h4>Detalle de Productos/Servicios</h4>
+                        </div>
+                        
+                        <!-- Selector de Productos -->
+                        <div class="product-selector-card">
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <label for="producto_selector" class="form-label">Seleccionar Producto</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-box"></i>
+                                        </span>
                                         <select id="producto_selector" class="form-select">
                                             <option value="">Seleccione un producto...</option>
                                             <?php foreach ($productos as $producto): ?>
@@ -545,81 +581,81 @@
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
-                                    <div class="col-md-4 d-flex align-items-end">
-                                        <button type="button" class="btn-modern w-100" id="btnAddProducto">
-                                            <i class="bi bi-plus-circle"></i>Añadir Producto
-                                        </button>
-                                    </div>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="button" class="btn-submit" id="btnAddProducto" style="flex: 1;">
+                                        <i class="fas fa-plus-circle me-2"></i>Añadir Producto
+                                    </button>
                                 </div>
                             </div>
-
-                            <!-- Tabla de Detalles -->
-                            <div class="table-responsive">
-                                <table class="table table-modern" id="detalle_factura">
-                                    <thead>
-                                        <tr>
-                                            <th><i class="bi bi-box me-2"></i>Producto</th>
-                                            <th><i class="bi bi-hash me-2"></i>Cantidad</th>
-                                            <th><i class="bi bi-currency-dollar me-2"></i>Precio Unitario</th>
-                                            <th><i class="bi bi-percent me-2"></i>IVA %</th>
-                                            <th><i class="bi bi-calculator me-2"></i>Subtotal</th>
-                                            <th><i class="bi bi-trash me-2"></i>Acción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Mensaje cuando no hay productos -->
-                                        <tr id="emptyTableMessage" style="display: none;">
-                                            <td colspan="6" class="text-center">
-                                                <div class="empty-table-message">
-                                                    <i class="bi bi-inbox"></i>
-                                                    <p>No hay productos añadidos</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
                         </div>
 
-                        <!-- Totales -->
-                        <div class="total-box">
-                            <div class="section-header">
-                                <i class="bi bi-calculator"></i>
-                                <h4>Resumen de Factura</h4>
-                            </div>
-                            
-                            <div class="total-row">
-                                <span class="total-label">Subtotal General:</span>
-                                <span id="subtotal_display" class="total-value">$ 0.00</span>
-                            </div>
-                            
-                            <div class="total-row">
-                                <span class="total-label">Total Impuestos (IVA):</span>
-                                <span id="impuestos_display" class="total-value">$ 0.00</span>
-                            </div>
-                            
-                            <hr class="my-3">
-                            
-                            <div class="total-row">
-                                <span class="total-label">TOTAL FACTURA:</span>
-                                <span id="total_factura_display" class="grand-total">$ 0.00</span>
-                            </div>
+                        <!-- Tabla de Detalles -->
+                        <div class="table-responsive">
+                            <table class="table table-modern" id="detalle_factura">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-box me-2"></i>Producto</th>
+                                        <th><i class="fas fa-hashtag me-2"></i>Cantidad</th>
+                                        <th><i class="fas fa-dollar-sign me-2"></i>Precio Unitario</th>
+                                        <th><i class="fas fa-percent me-2"></i>IVA %</th>
+                                        <th><i class="fas fa-calculator me-2"></i>Subtotal</th>
+                                        <th><i class="fas fa-trash me-2"></i>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Mensaje cuando no hay productos -->
+                                    <tr id="emptyTableMessage" style="display: none;">
+                                        <td colspan="6" class="text-center">
+                                            <div class="empty-table-message">
+                                                <i class="fas fa-inbox"></i>
+                                                <p>No hay productos añadidos</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="total-box">
+                        <div class="section-header">
+                            <i class="fas fa-calculator"></i>
+                            <h4>Resumen de Factura</h4>
                         </div>
                         
-                        <!-- Campo oculto para detalles -->
-                        <input type="hidden" name="detalles_json" id="detalles_json" value="">
-
-                        <!-- Botones de acción -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="<?= url_to('facturas_index') ?>" class="btn-back me-2">
-                                <i class="bi bi-x-circle me-2"></i>Cancelar
-                            </a>
-                            <button type="submit" class="btn-primary-custom">
-                                <i class="bi bi-check-circle me-2"></i>Generar Factura
-                            </button>
+                        <div class="total-row">
+                            <span class="total-label">Subtotal General:</span>
+                            <span id="subtotal_display" class="total-value">$ 0.00</span>
                         </div>
-                    </form>
-                </div>
+                        
+                        <div class="total-row">
+                            <span class="total-label">Total Impuestos (IVA):</span>
+                            <span id="impuestos_display" class="total-value">$ 0.00</span>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <div class="total-row">
+                            <span class="total-label">TOTAL FACTURA:</span>
+                            <span id="total_factura_display" class="grand-total">$ 0.00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Campo oculto para detalles -->
+                    <input type="hidden" name="detalles_json" id="detalles_json" value="">
+
+                    <!-- Botones de acción -->
+                    <div class="action-buttons">
+                        <a href="<?= url_to('facturas_index') ?>" class="btn-back">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check-circle me-2"></i>Generar Factura
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -741,7 +777,7 @@
                 <td class="subtotal_linea_display fw-bold">${formatCurrency(0)}</td>
                 <td>
                     <button type="button" class="btn-delete-line">
-                        <i class="bi bi-trash"></i>
+                        <i class="fas fa-trash"></i>
                     </button>
                 </td>
             `;
@@ -817,7 +853,7 @@
             // Deshabilitar botón temporalmente
             const submitBtn = facturaForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Procesando...';
+            submitBtn.innerHTML = '<i class="fas fa-hourglass-half me-2"></i>Procesando...';
             submitBtn.disabled = true;
             
             // Rehabilitar después de 5 segundos (por si hay error)
@@ -828,24 +864,6 @@
             }, 5000);
             
             return true;
-        });
-
-        // Menu toggle para móviles
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-
-        // Cerrar menú al hacer clic fuera en móviles
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (window.innerWidth <= 768 && 
-                !sidebar.contains(event.target) && 
-                !menuToggle.contains(event.target) &&
-                sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-            }
         });
 
         // Calcular totales iniciales

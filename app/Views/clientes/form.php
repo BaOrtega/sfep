@@ -8,180 +8,124 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --sidebar-width: 280px;
-            --main-padding: 30px;
+            --primary-color: #1a5fb4;
+            --secondary-color: #2d3748;
+            --accent-color: #0ea5e9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --main-padding: 2rem;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-color);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
         }
         
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        
+        /* Main Content */
         .main-content {
-            margin-left: var(--sidebar-width);
             padding: var(--main-padding);
-            min-height: 100vh;
+            max-width: 1000px;
+            margin: 0 auto;
         }
         
-        .logo {
-            font-size: 1.8em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .nav-item a {
-            color: #495057;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .nav-item a:hover {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            transform: translateX(5px);
-        }
-        
-        .nav-item a.active {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-        }
-        
-        .user-info {
-            position: absolute;
-            bottom: 30px;
-            width: calc(100% - 50px);
-        }
-        
-        .card-main {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: none;
-            overflow: hidden;
-        }
-        
-        .card-header-custom {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            padding: 25px;
-            border-bottom: none;
-        }
-        
-        .btn-modern {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: white;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
-            color: white;
-        }
-        
-        .btn-back {
-            background: linear-gradient(135deg, #6c757d, #5a6268);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: white;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
-            color: white;
-        }
-        
-        .form-modern {
-            padding: 30px;
-        }
-        
-        .form-floating {
+        /* Back Button */
+        .back-button {
             margin-bottom: 1.5rem;
         }
         
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.3rem rgba(0, 123, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .form-label {
+        .btn-back {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: var(--dark-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
         }
         
-        .required-field::after {
-            content: " *";
-            color: #dc3545;
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: var(--primary-color);
+            transform: translateX(-5px);
         }
         
-        .alert-modern {
-            border-radius: 15px;
-            border: none;
-            padding: 15px 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: var(--transition);
         }
         
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0c4a9e 100%);
+            color: white;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+        
+        .required-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Form Content */
+        .form-content {
+            padding: 2rem;
+        }
+        
+        /* Form Sections */
         .form-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-left: 4px solid #007bff;
-            transition: all 0.3s ease;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
         }
         
         .form-section:hover {
@@ -189,219 +133,257 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .form-title {
-            color: #007bff;
+        .section-title {
+            color: var(--primary-color);
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .required-field::after {
+            content: " *";
+            color: var(--danger-color);
+        }
+        
+        .form-control {
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 95, 180, 0.1);
+            outline: none;
+        }
+        
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+        
+        .form-control.is-valid {
+            border-color: var(--success-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Error Messages */
+        .invalid-feedback {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-cancel {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: var(--dark-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            color: var(--dark-color);
+            transform: translateY(-2px);
         }
         
         .btn-submit {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0c4a9e 100%);
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
             color: white;
-            width: 100%;
-            margin-top: 10px;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
         
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(26, 95, 180, 0.3);
         }
         
-        .badge-info {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* Alert Styles */
+        .alert-custom {
+            border-radius: var(--border-radius);
+            border: none;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
         }
-
+        
         /* Responsive */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
+        @media (max-width: 1200px) {
+            .main-content {
+                padding: 1.5rem;
             }
-            
-            .sidebar.active {
-                transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --main-padding: 1rem;
             }
             
             .main-content {
-                margin-left: 0;
-                padding: 15px;
+                padding: 1rem;
             }
             
-            .form-modern {
-                padding: 20px;
+            .form-header {
+                padding: 1.5rem;
+            }
+            
+            .form-content {
+                padding: 1.5rem;
             }
             
             .form-section {
-                padding: 20px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
             
-            .menu-toggle {
-                display: block;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 1001;
-                background: rgba(255, 255, 255, 0.9);
-                border: none;
-                border-radius: 8px;
-                padding: 8px 12px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            .action-buttons {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
-
-            .card-header-custom .d-flex {
+            
+            .required-badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .form-header .d-flex {
                 flex-direction: column;
-                gap: 15px;
+                gap: 1rem;
                 text-align: center;
             }
-
-            .badge-info {
-                font-size: 0.8rem;
+            
+            .section-title {
+                font-size: 1.1rem;
             }
         }
-
-        @media (min-width: 769px) {
-            .menu-toggle {
-                display: none;
+        
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-
-        /* Validación visual */
-        .is-invalid {
-            border-color: #dc3545;
-            box-shadow: 0 0 0 0.3rem rgba(220, 53, 69, 0.1);
-        }
-
-        .is-valid {
-            border-color: #28a745;
-            box-shadow: 0 0 0 0.3rem rgba(40, 167, 69, 0.1);
-        }
-
-        .invalid-feedback {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.875rem;
-            color: #dc3545;
+        
+        .form-container {
+            animation: fadeInUp 0.5s ease-out forwards;
         }
     </style>
 </head>
 <body>
-    <!-- Menu Toggle Mobile -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo">PFEP</div>
-        <hr style="border-color: #e9ecef; margin: 20px 0;">
-        <nav>
-            <div class="nav-item">
-                <a href="<?= url_to('dashboard') ?>">
-                    <i class="bi bi-house me-3"></i>Dashboard
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('clientes_index') ?>" class="active">
-                    <i class="bi bi-people me-3"></i>Clientes
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('productos_index') ?>">
-                    <i class="bi bi-box-seam me-3"></i>Productos
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('facturas_index') ?>">
-                    <i class="bi bi-receipt me-3"></i>Factura
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('reportes_index') ?>">
-                    <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
-                </a>
-            </div>
-        </nav>
-        
-        <div class="user-info">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <p class="mb-1 fw-bold"><?= esc(session()->get('user_name')) ?></p>
-                    <small class="text-muted">Usuario activo</small>
-                </div>
-                <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                    <i class="bi bi-person"></i>
-                </div>
-            </div>
-            <a href="<?= url_to('logout') ?>" class="btn btn-outline-danger w-100">
-                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-            </a>
-        </div>
-    </div>
+    <?php if (file_exists(APPPATH . 'Views/partials/navbar.php')): ?>
+        <?= view('partials/navbar') ?>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Botón Volver -->
-        <a href="<?= url_to('clientes_index') ?>" class="btn-back">
-            <i class="bi bi-arrow-left"></i>Volver a Clientes
-        </a>
+        <!-- Back Button -->
+        <div class="back-button">
+            <a href="<?= url_to('clientes_index') ?>" class="btn-back">
+                <i class="fas fa-arrow-left"></i>Volver a Clientes
+            </a>
+        </div>
 
-        <div class="card-main">
-            <!-- Header -->
-            <div class="card-header-custom">
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Form Header -->
+            <div class="form-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h2 class="mb-1">
-                            <i class="bi bi-person-plus me-2"></i><?= esc($title) ?>
-                        </h2>
+                        <h1 class="h2 mb-2">
+                            <i class="fas fa-user-plus me-2"></i><?= esc($title) ?>
+                        </h1>
                         <p class="mb-0 opacity-75">
                             <?= isset($cliente) ? 'Actualiza la información del cliente' : 'Completa los datos para registrar un nuevo cliente' ?>
                         </p>
                     </div>
-                    <div class="badge badge-info fs-6 p-3">
-                        <i class="bi bi-info-circle me-2"></i>
+                    <div class="required-badge">
+                        <i class="fas fa-info-circle"></i>
                         Campos marcados con * son obligatorios
                     </div>
                 </div>
             </div>
 
-            <!-- Formulario -->
-            <div class="form-modern">
+            <!-- Form Content -->
+            <div class="form-content">
                 <!-- Alertas de Error -->
                 <?php if (session()->getFlashdata('errors')): ?>
-                    <div class="alert alert-danger alert-modern alert-dismissible fade show" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="alert alert-danger alert-custom alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>Por favor corrige los siguientes errores:</strong>
                         <ul class="mb-0 mt-2">
                             <?php foreach (session()->getFlashdata('errors') as $error): ?>
                                 <li><?= esc($error) ?></li>
                             <?php endforeach; ?>
                         </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>
 
                 <!-- Alertas de Éxito -->
                 <?php if (session()->getFlashdata('success')): ?>
-                    <div class="alert alert-success alert-modern alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i>
+                    <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
                         <?= session()->getFlashdata('success') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>
 
-                <form action="<?= url_to('clientes_save') ?>" method="post" id="productoForm">
+                <form action="<?= url_to('clientes_save') ?>" method="post" id="clienteForm">
                     <?= csrf_field() ?>
                     
                     <!-- Campo oculto para el ID si estamos editando -->
@@ -411,119 +393,111 @@
 
                     <!-- Sección Información Básica -->
                     <div class="form-section">
-                        <h4 class="form-title">
-                            <i class="bi bi-person-vcard"></i>Información Básica
+                        <h4 class="section-title">
+                            <i class="fas fa-id-card"></i>Información Básica
                         </h4>
                         
                         <div class="row">
                             <!-- Nombre Completo -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" 
-                                           class="form-control <?= session()->getFlashdata('errors.nombre') ? 'is-invalid' : '' ?>" 
-                                           id="nombre" 
-                                           name="nombre" 
-                                           value="<?= old('nombre', $cliente['nombre'] ?? '') ?>" 
-                                           placeholder="Juan Pérez"
-                                           required
-                                           maxlength="100">
-                                    <label for="nombre" class="required-field">
-                                        <i class="bi bi-person me-2"></i>Nombre Completo
-                                    </label>
-                                    <?php if (session()->getFlashdata('errors.nombre')): ?>
-                                        <div class="invalid-feedback">
-                                            <?= session()->getFlashdata('errors.nombre') ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                            <div class="col-md-6 form-group">
+                                <label for="nombre" class="form-label required-field">
+                                    <i class="fas fa-user text-primary"></i>Nombre Completo
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= session()->getFlashdata('errors.nombre') ? 'is-invalid' : '' ?>" 
+                                       id="nombre" 
+                                       name="nombre" 
+                                       value="<?= old('nombre', $cliente['nombre'] ?? '') ?>" 
+                                       placeholder="Ej: Juan Pérez"
+                                       required
+                                       maxlength="100">
+                                <?php if (session()->getFlashdata('errors.nombre')): ?>
+                                    <div class="invalid-feedback">
+                                        <?= session()->getFlashdata('errors.nombre') ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <!-- NIT/Cédula -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" 
-                                           class="form-control <?= session()->getFlashdata('errors.nit') ? 'is-invalid' : '' ?>" 
-                                           id="nit" 
-                                           name="nit" 
-                                           value="<?= old('nit', $cliente['nit'] ?? '') ?>" 
-                                           placeholder="123456789"
-                                           required
-                                           maxlength="20">
-                                    <label for="nit" class="required-field">
-                                        <i class="bi bi-credit-card me-2"></i>NIT/Cédula
-                                    </label>
-                                    <?php if (session()->getFlashdata('errors.nit')): ?>
-                                        <div class="invalid-feedback">
-                                            <?= session()->getFlashdata('errors.nit') ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                            <div class="col-md-6 form-group">
+                                <label for="nit" class="form-label required-field">
+                                    <i class="fas fa-address-card text-primary"></i>NIT/Cédula
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= session()->getFlashdata('errors.nit') ? 'is-invalid' : '' ?>" 
+                                       id="nit" 
+                                       name="nit" 
+                                       value="<?= old('nit', $cliente['nit'] ?? '') ?>" 
+                                       placeholder="Ej: 123456789"
+                                       required
+                                       maxlength="20">
+                                <?php if (session()->getFlashdata('errors.nit')): ?>
+                                    <div class="invalid-feedback">
+                                        <?= session()->getFlashdata('errors.nit') ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
 
                     <!-- Sección Información de Contacto -->
                     <div class="form-section">
-                        <h4 class="form-title">
-                            <i class="bi bi-telephone"></i>Información de Contacto
+                        <h4 class="section-title">
+                            <i class="fas fa-address-book"></i>Información de Contacto
                         </h4>
                         
                         <div class="row">
                             <!-- Email -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" 
-                                           class="form-control <?= session()->getFlashdata('errors.email') ? 'is-invalid' : '' ?>" 
-                                           id="email" 
-                                           name="email" 
-                                           value="<?= old('email', $cliente['email'] ?? '') ?>" 
-                                           placeholder="cliente@empresa.com"
-                                           maxlength="100">
-                                    <label for="email">
-                                        <i class="bi bi-envelope me-2"></i>Correo Electrónico
-                                    </label>
-                                    <?php if (session()->getFlashdata('errors.email')): ?>
-                                        <div class="invalid-feedback">
-                                            <?= session()->getFlashdata('errors.email') ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                            <div class="col-md-6 form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope text-primary"></i>Correo Electrónico
+                                </label>
+                                <input type="email" 
+                                       class="form-control <?= session()->getFlashdata('errors.email') ? 'is-invalid' : '' ?>" 
+                                       id="email" 
+                                       name="email" 
+                                       value="<?= old('email', $cliente['email'] ?? '') ?>" 
+                                       placeholder="Ej: cliente@empresa.com"
+                                       maxlength="100">
+                                <?php if (session()->getFlashdata('errors.email')): ?>
+                                    <div class="invalid-feedback">
+                                        <?= session()->getFlashdata('errors.email') ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <!-- Teléfono -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" 
-                                           class="form-control <?= session()->getFlashdata('errors.telefono') ? 'is-invalid' : '' ?>" 
-                                           id="telefono" 
-                                           name="telefono" 
-                                           value="<?= old('telefono', $cliente['telefono'] ?? '') ?>" 
-                                           placeholder="3001234567"
-                                           maxlength="15">
-                                    <label for="telefono">
-                                        <i class="bi bi-phone me-2"></i>Teléfono
-                                    </label>
-                                    <?php if (session()->getFlashdata('errors.telefono')): ?>
-                                        <div class="invalid-feedback">
-                                            <?= session()->getFlashdata('errors.telefono') ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                            <div class="col-md-6 form-group">
+                                <label for="telefono" class="form-label">
+                                    <i class="fas fa-phone text-primary"></i>Teléfono
+                                </label>
+                                <input type="text" 
+                                       class="form-control <?= session()->getFlashdata('errors.telefono') ? 'is-invalid' : '' ?>" 
+                                       id="telefono" 
+                                       name="telefono" 
+                                       value="<?= old('telefono', $cliente['telefono'] ?? '') ?>" 
+                                       placeholder="Ej: 3001234567"
+                                       maxlength="15">
+                                <?php if (session()->getFlashdata('errors.telefono')): ?>
+                                    <div class="invalid-feedback">
+                                        <?= session()->getFlashdata('errors.telefono') ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
                         <!-- Dirección -->
-                        <div class="form-floating mt-3">
+                        <div class="form-group">
+                            <label for="direccion" class="form-label">
+                                <i class="fas fa-map-marker-alt text-primary"></i>Dirección
+                            </label>
                             <input type="text" 
                                    class="form-control <?= session()->getFlashdata('errors.direccion') ? 'is-invalid' : '' ?>" 
                                    id="direccion" 
                                    name="direccion" 
                                    value="<?= old('direccion', $cliente['direccion'] ?? '') ?>" 
-                                   placeholder="Calle 123 # 45-67"
+                                   placeholder="Ej: Calle 123 # 45-67, Ciudad"
                                    maxlength="200">
-                            <label for="direccion">
-                                <i class="bi bi-geo-alt me-2"></i>Dirección
-                            </label>
                             <?php if (session()->getFlashdata('errors.direccion')): ?>
                                 <div class="invalid-feedback">
                                     <?= session()->getFlashdata('errors.direccion') ?>
@@ -533,18 +507,14 @@
                     </div>
 
                     <!-- Botones de Acción -->
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <a href="<?= url_to('clientes_index') ?>" class="btn btn-outline-secondary w-100 py-3">
-                                <i class="bi bi-x-circle me-2"></i>Cancelar
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="submit" class="btn-submit">
-                                <i class="bi bi-check-circle me-2"></i>
-                                <?= isset($cliente) ? 'Actualizar Cliente' : 'Guardar Nuevo Cliente' ?>
-                            </button>
-                        </div>
+                    <div class="action-buttons">
+                        <a href="<?= url_to('clientes_index') ?>" class="btn-cancel">
+                            <i class="fas fa-times"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check-circle"></i>
+                            <?= isset($cliente) ? 'Actualizar Cliente' : 'Guardar Cliente' ?>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -555,24 +525,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Toggle menu para móviles
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-
-        // Cerrar menú al hacer clic fuera en móviles
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (window.innerWidth <= 768 && 
-                !sidebar.contains(event.target) && 
-                !menuToggle.contains(event.target) &&
-                sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-            }
-        });
-
         // Formatear automáticamente el teléfono
         const telefonoInput = document.getElementById('telefono');
         if (telefonoInput) {
@@ -593,9 +545,17 @@
             const nombre = document.getElementById('nombre').value.trim();
             const nit = document.getElementById('nit').value.trim();
             
-            if (!nombre || !nit) {
+            if (!nombre) {
                 e.preventDefault();
-                alert('Por favor complete los campos obligatorios');
+                alert('Por favor ingrese el nombre del cliente');
+                document.getElementById('nombre').focus();
+                return false;
+            }
+            
+            if (!nit) {
+                e.preventDefault();
+                alert('Por favor ingrese el NIT/Cédula del cliente');
+                document.getElementById('nit').focus();
                 return false;
             }
         });
@@ -603,6 +563,12 @@
         // Auto-focus en el primer campo
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('nombre').focus();
+        });
+
+        // Efecto de carga suave
+        document.addEventListener('DOMContentLoaded', function() {
+            const formContainer = document.querySelector('.form-container');
+            formContainer.style.animationDelay = '0.1s';
         });
     </script>
 </body>

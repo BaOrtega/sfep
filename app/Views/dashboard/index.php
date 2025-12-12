@@ -8,235 +8,345 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --sidebar-width: 280px;
-            --main-padding: 30px;
+            --primary-color: #1a5fb4;
+            --secondary-color: #2d3748;
+            --accent-color: #0ea5e9;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --main-padding: 2rem;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-color);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
         }
         
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        
+        /* Main Content */
         .main-content {
-            margin-left: var(--sidebar-width);
             padding: var(--main-padding);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .content-center {
             max-width: 1400px;
             margin: 0 auto;
-            width: 100%;
         }
         
-        .logo {
-            font-size: 1.8em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .nav-item a {
-            color: #495057;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .nav-item a:hover {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            transform: translateX(5px);
-        }
-        
-        .nav-item a.active {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
-        }
-        
-        .user-info {
-            position: absolute;
-            bottom: 30px;
-            width: calc(100% - 50px);
-        }
-        
-        .card-main {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: none;
-            overflow: hidden;
-            margin-bottom: 25px;
-        }
-        
-        .card-header-custom {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            padding: 25px;
-            border-bottom: none;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
+        /* Welcome Card */
+        .welcome-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border-left: 4px solid;
-            transition: all 0.3s ease;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-left: 5px solid var(--primary-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, rgba(26, 95, 180, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+            border-radius: 50%;
+            transform: translate(40%, -40%);
+        }
+        
+        .welcome-card h1 {
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-card .lead {
+            color: #64748b;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* User Info in Welcome Card */
+        .user-welcome-info {
+            background: linear-gradient(135deg, rgba(26, 95, 180, 0.1) 0%, rgba(14, 165, 233, 0.1) 100%);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .user-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .user-badge {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        /* Quick Actions */
+        .quick-actions-horizontal {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-action-horizontal {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 1.75rem 1.25rem;
+            text-decoration: none;
             text-align: center;
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-action-horizontal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-action-horizontal:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(26, 95, 180, 0.15);
+        }
+        
+        .btn-action-horizontal:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .btn-action-horizontal i {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+        
+        .btn-action-horizontal:hover i {
+            color: var(--accent-color);
+            transform: scale(1.1);
+        }
+        
+        .btn-action-horizontal span {
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid transparent;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(26, 95, 180, 0.02) 100%);
+            opacity: 0;
+            transition: var(--transition);
         }
         
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
         }
         
         .stat-card.clients {
-            border-left-color: #28a745;
+            border-top-color: var(--success-color);
         }
         
         .stat-card.products {
-            border-left-color: #ffc107;
+            border-top-color: var(--warning-color);
         }
         
         .stat-card.invoices {
-            border-left-color: #dc3545;
+            border-top-color: var(--danger-color);
         }
         
         .stat-card.sales {
-            border-left-color: #6f42c1;
+            border-top-color: var(--accent-color);
+        }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+            opacity: 0.9;
         }
         
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 5px;
             line-height: 1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--dark-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .stat-title {
             font-size: 0.9rem;
-            color: #6c757d;
+            color: #64748b;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 10px;
         }
         
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            opacity: 0.8;
+        /* Recent Invoices Card */
+        .card-main {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            transition: var(--transition);
         }
         
-        .welcome-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .card-main:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0c4a9e 100%);
             color: white;
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            padding: 1.5rem 2rem;
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
         }
         
-        .quick-actions-horizontal {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-top: 25px;
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
         }
         
-        .btn-action-horizontal {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 20px 15px;
-            border-radius: 15px;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 120px;
-        }
-        
-        .btn-action-horizontal:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            color: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-action-horizontal i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        
-        .btn-action-horizontal span {
+        .card-header-custom h4 {
             font-weight: 600;
-            font-size: 1rem;
+            margin: 0;
+            position: relative;
+            z-index: 1;
         }
         
-        /* Opciones de admin en sidebar */
-        .admin-only {
-            border-left: 3px solid #dc3545;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #dee2e6;
+        .card-header-custom i {
+            margin-right: 0.75rem;
         }
         
-        .admin-only-title {
-            color: #dc3545;
-            font-size: 0.85rem;
+        /* Table Styles */
+        .table-responsive {
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .table {
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table thead th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 1.25rem 1.5rem;
             font-weight: 600;
+            color: var(--dark-color);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            padding-left: 15px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
         }
-
+        
+        .table tbody td {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+            transition: var(--transition);
+        }
+        
+        .table tbody tr {
+            transition: var(--transition);
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .table tbody tr:hover td {
+            transform: translateX(5px);
+        }
+        
+        .badge {
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        
         /* Responsive */
         @media (max-width: 1200px) {
             .quick-actions-horizontal {
@@ -244,281 +354,251 @@
             }
         }
         
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
+        @media (max-width: 992px) {
+            .main-content {
+                padding: 1.5rem;
             }
             
-            .sidebar.active {
-                transform: translateX(0);
+            .welcome-card {
+                padding: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            :root {
+                --main-padding: 1rem;
             }
             
             .main-content {
-                margin-left: 0;
-                padding: 15px;
+                padding: 1rem;
+            }
+            
+            .welcome-card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
             }
             
             .stats-grid {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
             }
             
-            .welcome-card {
-                padding: 25px;
+            .stat-card {
+                padding: 1.5rem;
             }
             
             .quick-actions-horizontal {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 1rem;
+                margin-top: 1.5rem;
             }
             
-            .menu-toggle {
-                display: block;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 1001;
-                background: rgba(255, 255, 255, 0.9);
-                border: none;
-                border-radius: 8px;
-                padding: 8px 12px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            .btn-action-horizontal {
+                padding: 1.25rem;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: 1rem;
             }
         }
-
-        @media (min-width: 769px) {
-            .menu-toggle {
-                display: none;
+        
+        @media (max-width: 576px) {
+            .welcome-card h1 {
+                font-size: 1.5rem;
+            }
+            
+            .user-badges {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-badge {
+                width: 100%;
+                justify-content: center;
             }
         }
+        
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-card, .stat-card, .card-main {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
-    <!-- Menu Toggle Mobile -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="logo">PFEP</div>
-        <hr style="border-color: #e9ecef; margin: 20px 0;">
-        <nav>
-            <div class="nav-item">
-                <a href="<?= url_to('dashboard') ?>" class="active">
-                    <i class="bi bi-house me-3"></i>Dashboard
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('clientes_index') ?>">
-                    <i class="bi bi-people me-3"></i>Clientes
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('productos_index') ?>">
-                    <i class="bi bi-box-seam me-3"></i>Productos
-                </a>
-            </div>
-            <div class="nav-item">
-                <a href="<?= url_to('facturas_index') ?>">
-                    <i class="bi bi-receipt me-3"></i>Factura
-                </a>
-            </div>
-            
-            <?php if (session()->get('rol') === 'admin'): ?>
-            <!-- Sección solo para administradores -->
-            <div class="admin-only">
-                <div class="admin-only-title">
-                    <i class="bi bi-shield-lock me-1"></i> Administración
-                </div>
-                <div class="nav-item">
-                    <a href="<?= url_to('reportes_index') ?>">
-                        <i class="bi bi-bar-chart me-3"></i>Reportes y Análisis
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="<?= url_to('usuarios_index') ?>">
-                        <i class="bi bi-people-fill me-3"></i>Usuarios
-                    </a>
-                </div>
-            </div>
-            <?php endif; ?>
-        </nav>
-        
-        <div class="user-info">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <p class="mb-1 fw-bold"><?= esc(session()->get('user_name')) ?></p>
-                    <small class="text-muted">
-                        <?= session()->get('rol') === 'admin' ? 'Administrador' : 'Vendedor' ?>
-                    </small>
-                </div>
-                <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                    <i class="bi bi-person"></i>
-                </div>
-            </div>
-            <div class="d-grid gap-2">
-                <a href="<?= url_to('profile') ?>" class="btn btn-outline-primary">
-                    <i class="bi bi-person-circle me-2"></i>Mi Perfil
-                </a>
-                <a href="<?= url_to('logout') ?>" class="btn btn-outline-danger">
-                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-                </a>
-            </div>
-        </div>
-    </div>
+    <?php if (file_exists(APPPATH . 'Views/partials/navbar.php')): ?>
+        <?= view('partials/navbar') ?>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="content-center">
-            <!-- Tarjeta de Bienvenida -->
-            <div class="welcome-card">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h1 class="mb-3">👋 ¡Bienvenido, <?= esc(session()->get('user_name')) ?>!</h1>
-                        <p class="mb-4 opacity-90">
-                            <?php if (session()->get('rol') === 'admin'): ?>
-                                Administrador del Sistema de Facturación Electrónica
-                            <?php else: ?>
-                                Vendedor del Sistema de Facturación Electrónica
-                            <?php endif; ?>
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <i class="bi bi-<?= session()->get('rol') === 'admin' ? 'shield-check' : 'person-badge' ?>" 
-                           style="font-size: 6rem; opacity: 0.8;"></i>
-                    </div>
+        <!-- Welcome Card with User Info -->
+        <div class="welcome-card">
+            <div class="row align-items-center mb-4">
+                <div class="col-md-8">
+                    <h1 class="display-6 mb-3">👋 ¡Bienvenido, <?= esc(session()->get('user_name')) ?>!</h1>
+                    <p class="lead mb-0">
+                        <?php if (session()->get('rol') === 'admin'): ?>
+                            Panel de Control Administrativo - Sistema de Facturación Electrónica
+                        <?php else: ?>
+                            Panel de Vendedor - Sistema de Facturación Electrónica
+                        <?php endif; ?>
+                    </p>
                 </div>
-                
-                <!-- Acciones Rápidas en Fila -->
-                <div class="quick-actions-horizontal">
-                    <a href="<?= url_to('clientes_index') ?>" class="btn-action-horizontal">
-                        <i class="bi bi-people"></i>
-                        <span>Gestionar Clientes</span>
-                    </a>
-                    <a href="<?= url_to('facturas_index') ?>" class="btn-action-horizontal">
-                        <i class="bi bi-receipt"></i>
-                        <span>Crear Factura</span>
-                    </a>
-                    <a href="<?= url_to('productos_index') ?>" class="btn-action-horizontal">
-                        <i class="bi bi-box-seam"></i>
-                        <span>Ver Productos</span>
-                    </a>
-                    
-                    <?php if (session()->get('rol') === 'admin'): ?>
-                    <a href="<?= url_to('reportes_index') ?>" class="btn-action-horizontal">
-                        <i class="bi bi-bar-chart"></i>
-                        <span>Ver Reportes</span>
-                    </a>
-                    <?php else: ?>
-                    <a href="<?= url_to('profile') ?>" class="btn-action-horizontal">
-                        <i class="bi bi-person-circle"></i>
-                        <span>Mi Perfil</span>
-                    </a>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Estadísticas Rápidas -->
-            <div class="stats-grid">
-                <div class="stat-card clients">
-                    <div class="stat-icon text-success">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div class="stat-number text-success"><?= $totalClientes ?></div>
-                    <div class="stat-title">Clientes Registrados</div>
-                </div>
-                
-                <div class="stat-card products">
-                    <div class="stat-icon text-warning">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="stat-number text-warning"><?= $totalProductos ?></div>
-                    <div class="stat-title">Productos en Inventario</div>
-                </div>
-                
-                <div class="stat-card invoices">
-                    <div class="stat-icon text-danger">
-                        <i class="bi bi-receipt"></i>
-                    </div>
-                    <div class="stat-number text-danger"><?= $totalFacturas ?? 0 ?></div>
-                    <div class="stat-title">Facturas Emitidas</div>
-                </div>
-                
-                <div class="stat-card sales">
-                    <div class="stat-icon text-primary">
-                        <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="stat-number text-primary">$<?= number_format($totalVentas ?? 0, 0, ',', '.') ?></div>
-                    <div class="stat-title">Ventas Totales</div>
-                </div>
-            </div>
-
-            <!-- Facturas Recientes -->
-            <?php if (isset($facturasRecientes) && !empty($facturasRecientes)): ?>
-            <div class="card card-main">
-                <div class="card-header-custom">
-                    <h4><i class="bi bi-clock-history me-2"></i>Facturas Recientes</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Cliente</th>
-                                    <th>Fecha</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($facturasRecientes as $factura): ?>
-                                <tr>
-                                    <td>#<?= $factura['id'] ?></td>
-                                    <td><?= esc($factura['cliente_nombre'] ?? 'N/A') ?></td>
-                                    <td><?= date('d/m/Y', strtotime($factura['fecha_emision'])) ?></td>
-                                    <td>$<?= number_format($factura['total_factura'], 2, ',', '.') ?></td>
-                                    <td>
-                                        <span class="badge bg-<?= 
-                                            $factura['estado'] == 'PAGADA' ? 'success' : 
-                                            ($factura['estado'] == 'EMITIDA' ? 'warning' : 'danger')
-                                        ?>">
-                                            <?= $factura['estado'] ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                <div class="col-md-4 text-md-end text-center mt-3 mt-md-0">
+                    <div class="bg-primary bg-opacity-10 d-inline-block p-4 rounded-circle">
+                        <i class="fas fa-<?= session()->get('rol') === 'admin' ? 'shield-alt' : 'user-tie' ?> fa-3x text-primary"></i>
                     </div>
                 </div>
             </div>
-            <?php endif; ?>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions-horizontal">
+                <a href="<?= url_to('clientes_index') ?>" class="btn-action-horizontal">
+                    <i class="fas fa-users"></i>
+                    <span>Gestionar Clientes</span>
+                </a>
+                <a href="<?= url_to('facturas_index') ?>" class="btn-action-horizontal">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Crear Factura</span>
+                </a>
+                <a href="<?= url_to('productos_index') ?>" class="btn-action-horizontal">
+                    <i class="fas fa-boxes"></i>
+                    <span>Ver Productos</span>
+                </a>
+                
+                <?php if (session()->get('rol') === 'admin'): ?>
+                <a href="<?= url_to('reportes_index') ?>" class="btn-action-horizontal">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Ver Reportes</span>
+                </a>
+                <?php else: ?>
+                <a href="<?= url_to('profile') ?>" class="btn-action-horizontal">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Mi Perfil</span>
+                </a>
+                <?php endif; ?>
+            </div>
         </div>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card clients">
+                <div class="stat-icon text-success">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div class="stat-number text-success"><?= $totalClientes ?></div>
+                <div class="stat-title">Clientes Registrados</div>
+                <small class="text-muted d-block mt-2">Últimos 30 días</small>
+            </div>
+            
+            <div class="stat-card products">
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <div class="stat-number text-warning"><?= $totalProductos ?></div>
+                <div class="stat-title">Productos en Inventario</div>
+                <small class="text-muted d-block mt-2">Stock disponible</small>
+            </div>
+            
+            <div class="stat-card invoices">
+                <div class="stat-icon text-danger">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+                <div class="stat-number text-danger"><?= $totalFacturas ?? 0 ?></div>
+                <div class="stat-title">Facturas Emitidas</div>
+                <small class="text-muted d-block mt-2">Este mes</small>
+            </div>
+            
+            <div class="stat-card sales">
+                <div class="stat-icon text-primary">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-number text-primary">$<?= number_format($totalVentas ?? 0, 0, ',', '.') ?></div>
+                <div class="stat-title">Ventas Totales</div>
+                <small class="text-muted d-block mt-2">Ingresos acumulados</small>
+            </div>
+        </div>
+
+        <!-- Recent Invoices -->
+        <?php if (isset($facturasRecientes) && !empty($facturasRecientes)): ?>
+        <div class="card card-main">
+            <div class="card-header-custom">
+                <h4><i class="fas fa-history me-2"></i>Facturas Recientes</h4>
+                <small class="opacity-75 position-relative z-1">Últimas 10 facturas emitidas</small>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>N° Factura</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($facturasRecientes as $factura): ?>
+                            <tr>
+                                <td><strong>#<?= $factura['id'] ?></strong></td>
+                                <td><?= esc($factura['cliente_nombre'] ?? 'N/A') ?></td>
+                                <td><?= date('d/m/Y', strtotime($factura['fecha_emision'])) ?></td>
+                                <td><strong>$<?= number_format($factura['total_factura'], 2, ',', '.') ?></strong></td>
+                                <td>
+                                    <span class="badge bg-<?= 
+                                        $factura['estado'] == 'PAGADA' ? 'success' : 
+                                        ($factura['estado'] == 'EMITIDA' ? 'warning' : 'danger')
+                                    ?> px-3 py-2">
+                                        <i class="fas fa-<?= 
+                                            $factura['estado'] == 'PAGADA' ? 'check-circle' : 
+                                            ($factura['estado'] == 'EMITIDA' ? 'clock' : 'exclamation-circle')
+                                        ?> me-1"></i>
+                                        <?= $factura['estado'] ?>
+                                    </span>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0 pt-0">
+                <a href="<?= url_to('facturas_index') ?>" class="btn btn-link text-decoration-none">
+                    <i class="fas fa-arrow-right me-1"></i> Ver todas las facturas
+                </a>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Toggle menu para móviles
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-
-        // Cerrar menú al hacer clic fuera en móviles
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (window.innerWidth <= 768 && 
-                !sidebar.contains(event.target) && 
-                !menuToggle.contains(event.target) &&
-                sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-            }
+        // Efecto de carga suave para los elementos
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.stat-card, .btn-action-horizontal');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
         });
     </script>
 </body>
