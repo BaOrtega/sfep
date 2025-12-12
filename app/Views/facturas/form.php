@@ -395,9 +395,11 @@
         
         /* Responsive */
         @media (max-width: 768px) {
+
             .main-content {
                 padding: 1rem;
             }
+
             
             .header-card {
                 padding: 1.5rem;
@@ -424,6 +426,7 @@
             .product-selector-card {
                 padding: 1rem;
             }
+            
         }
         
         @media (max-width: 576px) {
@@ -465,11 +468,11 @@
                     <p class="subtitle mb-0">
                         Complete los datos para generar una nueva factura
                     </p>
+                    <div class="required-badge">
+                        <i class="fas fa-info-circle"></i>
+                        Campos marcados con * son obligatorios
+                    </div>
                 </div>
-                <a href="<?= url_to('facturas_index') ?>" class="btn-back" style="flex: 0 0 auto; width: auto;">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Volver a Facturas
-                </a>
             </div>
         </div>
 

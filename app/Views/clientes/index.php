@@ -259,7 +259,7 @@
         }
         
         .badge-light {
-            background-color: #f1f5f9;
+            background-color: #3c94ecff;
             color: var(--dark-color);
         }
         

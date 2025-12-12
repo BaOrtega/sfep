@@ -312,22 +312,22 @@
         }
         
         .badge-success {
-            background-color: #d1fae5;
+            background-color: #17e078ff;
             color: #065f46;
         }
         
         .badge-warning {
-            background-color: #fef3c7;
+            background-color: #e8c22dff;
             color: #92400e;
         }
         
         .badge-danger {
-            background-color: #fee2e2;
+            background-color: #ce2020ff;
             color: #991b1b;
         }
         
         .badge-light {
-            background-color: #f1f5f9;
+            background-color: #1a74ceff;
             color: var(--dark-color);
         }
         

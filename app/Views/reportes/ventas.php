@@ -364,9 +364,6 @@
                     <h1><i class="fas fa-chart-line me-2"></i>Reporte de Ventas por Período</h1>
                     <p class="lead mb-0">Filtra y analiza las ventas por fechas y estado</p>
                 </div>
-                <a href="<?= url_to('reportes_index') ?>" class="btn btn-light">
-                    <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
-                </a>
             </div>
         </div>
 

@@ -407,9 +407,6 @@
                     <h1><i class="fas fa-clock me-2"></i>Cuentas por Cobrar</h1>
                     <p class="lead mb-0">Facturas emitidas pendientes de pago</p>
                 </div>
-                <a href="<?= url_to('reportes_index') ?>" class="btn btn-light">
-                    <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
-                </a>
             </div>
         </div>
 
@@ -497,9 +494,6 @@
                         <i class="fas fa-check-circle" style="font-size: 4rem; color: #28a745; opacity: 0.5;"></i>
                         <h4 class="text-muted mt-3">¡Excelente!</h4>
                         <p class="text-muted">No tienes facturas pendientes de pago</p>
-                        <a href="<?= url_to('reportes_index') ?>" class="btn btn-primary mt-3">
-                            <i class="fas fa-arrow-left me-2"></i>Volver al Dashboard
-                        </a>
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">

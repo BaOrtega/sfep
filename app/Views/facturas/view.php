@@ -568,9 +568,6 @@
                         Detalles de la Factura
                     </h3>
                     <div class="d-flex gap-2 mt-2 mt-md-0">
-                        <a href="<?= url_to('facturas_index') ?>" class="btn-back">
-                            <i class="fas fa-arrow-left me-2"></i>Volver
-                        </a>
                         <a href="<?= url_to('facturas_pdf', $factura['id']) ?>" class="btn-pdf" target="_blank">
                             <i class="fas fa-file-pdf me-2"></i>Generar PDF
                         </a>

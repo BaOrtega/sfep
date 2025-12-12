@@ -40,31 +40,6 @@
             margin: 0 auto;
         }
         
-        /* Back Button */
-        .back-button {
-            margin-bottom: 1.5rem;
-        }
-        
-        .btn-back {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            color: var(--dark-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-        
-        .btn-back:hover {
-            background: #e2e8f0;
-            color: var(--primary-color);
-            transform: translateX(-5px);
-        }
-        
         /* Form Container */
         .form-container {
             background: white;
@@ -331,13 +306,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Back Button -->
-        <div class="back-button">
-            <a href="<?= url_to('clientes_index') ?>" class="btn-back">
-                <i class="fas fa-arrow-left"></i>Volver a Clientes
-            </a>
-        </div>
-
+       
         <!-- Form Container -->
         <div class="form-container">
             <!-- Form Header -->

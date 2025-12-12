@@ -446,9 +446,6 @@
                     <h1><i class="fas fa-boxes me-2"></i>Reporte de Productos</h1>
                     <p class="lead mb-0">Análisis de inventario, rentabilidad y desempeño de productos</p>
                 </div>
-                <a href="<?= url_to('reportes_index') ?>" class="btn btn-light">
-                    <i class="fas fa-arrow-left me-2"></i>Volver a Reportes
-                </a>
             </div>
         </div>
 

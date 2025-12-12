@@ -210,15 +210,7 @@
                 <?php if ($isLoggedIn): ?>
                 <!-- Menú para usuarios autenticados -->
                 <ul class="navbar-nav me-auto">
-                    <!-- Dashboard -->
-                    <li class="nav-item">
-                        <a class="nav-link <?= isActive('/dashboard', $currentPath) ? 'active' : '' ?>" 
-                           href="<?= base_url('dashboard') ?>">
-                            <i class="fas fa-tachometer-alt"></i>
-                            Dashboard
-                        </a>
-                    </li>
-                    
+                
                     <!-- Clientes (admin y vendedor) -->
                     <li class="nav-item">
                         <a class="nav-link <?= isActive('/clientes', $currentPath) ? 'active' : '' ?>" 
