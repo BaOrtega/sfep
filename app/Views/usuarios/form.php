@@ -186,37 +186,90 @@
             font-size: 1rem;
         }
         
-        /* Role Badges */
-        .role-option {
+        /* Role Selection Styling - MEJORADO */
+        .role-selection-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .role-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .role-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 180px;
+        }
+        
+        .role-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .role-card.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(26, 95, 180, 0.03) 0%, rgba(14, 165, 233, 0.03) 100%);
+            box-shadow: 0 4px 15px rgba(26, 95, 180, 0.15);
+        }
+        
+        .role-card.selected::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        }
+        
+        .role-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: var(--transition);
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
         }
         
-        .role-option:hover {
-            border-color: var(--accent-color);
-            background-color: #f8fafc;
+        .role-icon.admin {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: var(--danger-color);
         }
         
-        .role-option.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(26, 95, 180, 0.05);
+        .role-icon.vendedor {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(2, 132, 199, 0.1) 100%);
+            color: var(--accent-color);
+        }
+        
+        .role-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
         }
         
         .role-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
             font-weight: 600;
-            font-size: 0.875rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
         }
         
         .badge-admin {
@@ -229,10 +282,66 @@
             color: white;
         }
         
-        .role-info {
-            font-size: 0.875rem;
+        .role-description {
+            font-size: 0.9rem;
             color: #64748b;
-            margin-left: 2.5rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+        
+        .role-permissions {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: auto;
+            padding-top: 0.5rem;
+            border-top: 1px solid #f1f5f9;
+            width: 100%;
+        }
+        
+        /* Selection indicator */
+        .selection-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .role-card.selected .selection-indicator {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .role-card.selected .selection-indicator::after {
+            content: '✓';
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Responsive adjustments for role selection */
+        @media (max-width: 768px) {
+            .role-options-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .role-card {
+                min-height: 160px;
+                padding: 1.25rem;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 992px) {
+            .role-options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         /* Buttons */
@@ -315,10 +424,6 @@
             
             .form-header {
                 padding: 1.25rem 1.5rem;
-            }
-            
-            .role-option {
-                padding: 0.75rem;
             }
             
             .btn-submit, .btn-cancel {
@@ -569,46 +674,71 @@
                     </div>
                     
                     <!-- Role Selection -->
-                    <div class="form-group mb-4">
+                    <div class="form-group mb-4 role-selection-container">
                         <label class="form-label">
                             <i class="fas fa-user-tag"></i>
                             <span>Rol del Usuario *</span>
                         </label>
                         
-                        <div class="role-option <?= (isset($usuario) && $usuario['rol'] == 'admin') || old('rol') == 'admin' ? 'selected' : '' ?>" 
-                             onclick="selectRole('admin')">
-                            <input type="radio" 
-                                   id="role_admin" 
-                                   name="rol" 
-                                   value="admin" 
-                                   <?= (isset($usuario) && $usuario['rol'] == 'admin') || old('rol') == 'admin' ? 'checked' : '' ?> 
-                                   required
-                                   hidden>
-                            <div class="role-badge badge-admin">
-                                <i class="fas fa-user-shield"></i>
-                                Administrador
+                        <div class="role-options-grid">
+                            <!-- Admin Role Card -->
+                            <div class="role-card <?= (isset($usuario) && $usuario['rol'] == 'admin') || old('rol') == 'admin' ? 'selected' : '' ?>" 
+                                 onclick="selectRole('admin')">
+                                <div class="selection-indicator"></div>
+                                <div class="role-icon admin">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="role-title">Administrador</div>
+                                <div class="role-badge badge-admin">
+                                    <i class="fas fa-crown me-1"></i> Acceso Total
+                                </div>
+                                <div class="role-description">
+                                    Control completo sobre todos los módulos y configuraciones del sistema
+                                </div>
+                                <div class="role-permissions">
+                                    <i class="fas fa-check-circle me-1"></i> Todos los permisos habilitados
+                                </div>
+                                <input type="radio" 
+                                       id="role_admin" 
+                                       name="rol" 
+                                       value="admin" 
+                                       <?= (isset($usuario) && $usuario['rol'] == 'admin') || old('rol') == 'admin' ? 'checked' : '' ?> 
+                                       required
+                                       hidden>
                             </div>
-                            <div class="flex-grow-1">
-                                <small class="text-muted">Acceso completo a todos los módulos del sistema</small>
+                            
+                            <!-- Vendedor Role Card -->
+                            <div class="role-card <?= (isset($usuario) && $usuario['rol'] == 'vendedor') || old('rol') == 'vendedor' || (!isset($usuario) && !old('rol')) ? 'selected' : '' ?>" 
+                                 onclick="selectRole('vendedor')">
+                                <div class="selection-indicator"></div>
+                                <div class="role-icon vendedor">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="role-title">Vendedor</div>
+                                <div class="role-badge badge-vendedor">
+                                    <i class="fas fa-shopping-cart me-1"></i> Acceso Limitado
+                                </div>
+                                <div class="role-description">
+                                    Acceso específico para gestión de ventas, clientes y productos
+                                </div>
+                                <div class="role-permissions">
+                                    <i class="fas fa-check-circle me-1"></i> Solo módulos de ventas
+                                </div>
+                                <input type="radio" 
+                                       id="role_vendedor" 
+                                       name="rol" 
+                                       value="vendedor" 
+                                       <?= (isset($usuario) && $usuario['rol'] == 'vendedor') || old('rol') == 'vendedor' || (!isset($usuario) && !old('rol')) ? 'checked' : '' ?> 
+                                       required
+                                       hidden>
                             </div>
                         </div>
                         
-                        <div class="role-option <?= (isset($usuario) && $usuario['rol'] == 'vendedor') || old('rol') == 'vendedor' || (!isset($usuario) && !old('rol')) ? 'selected' : '' ?>" 
-                             onclick="selectRole('vendedor')">
-                            <input type="radio" 
-                                   id="role_vendedor" 
-                                   name="rol" 
-                                   value="vendedor" 
-                                   <?= (isset($usuario) && $usuario['rol'] == 'vendedor') || old('rol') == 'vendedor' || (!isset($usuario) && !old('rol')) ? 'checked' : '' ?> 
-                                   required
-                                   hidden>
-                            <div class="role-badge badge-vendedor">
-                                <i class="fas fa-user-tie"></i>
-                                Vendedor
-                            </div>
-                            <div class="flex-grow-1">
-                                <small class="text-muted">Solo acceso a clientes, productos y facturas</small>
-                            </div>
+                        <div class="role-info mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Selecciona el rol que determinará los permisos y accesos del usuario en el sistema
+                            </small>
                         </div>
                     </div>
                     
@@ -854,17 +984,17 @@
         
         // Role selection function
         function selectRole(role) {
-            const adminOption = document.querySelector('.role-option:first-child');
-            const vendedorOption = document.querySelector('.role-option:last-child');
+            const adminCard = document.querySelector('.role-card:first-child');
+            const vendedorCard = document.querySelector('.role-card:last-child');
             
             if (role === 'admin') {
                 document.getElementById('role_admin').checked = true;
-                adminOption.classList.add('selected');
-                vendedorOption.classList.remove('selected');
+                adminCard.classList.add('selected');
+                vendedorCard.classList.remove('selected');
             } else {
                 document.getElementById('role_vendedor').checked = true;
-                vendedorOption.classList.add('selected');
-                adminOption.classList.remove('selected');
+                vendedorCard.classList.add('selected');
+                adminCard.classList.remove('selected');
             }
         }
     </script>

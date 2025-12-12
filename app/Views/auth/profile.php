@@ -701,17 +701,8 @@ $isEdit = isset($isEdit) ? $isEdit : false;
                             <form action="<?= base_url('profile/update') ?>" method="post" id="passwordForm">
                                 <?= csrf_field() ?>
                                 
-                                <div class="mb-3">
-                                    <label for="current_password" class="form-label">Contraseña Actual</label>
-                                    <div class="password-input-group">
-                                        <input type="password" class="form-control" id="current_password" name="current_password">
-                                        <button class="btn btn-outline-secondary password-toggle" type="button" data-target="current_password">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <small class="form-text text-muted">Obligatorio para cambiar la contraseña.</small>
-                                </div>
-                                
+                                <input type="hidden" name="nombre" value="<?= esc($user['user_name'] ?? $user['nombre'] ?? '') ?>">
+                                    
                                 <div class="mb-3">
                                     <label for="new_password" class="form-label">Nueva Contraseña</label>
                                     <div class="password-input-group">

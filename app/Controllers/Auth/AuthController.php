@@ -428,18 +428,45 @@ class AuthController extends BaseController
         $user_id = session()->get('user_id');
         $post = $this->request->getPost();
         
-        // Validar que el nombre no esté vacío
-        if (empty($post['nombre'])) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'El nombre es requerido.');
+        // Preparar datos para actualizar
+        $updateData = [];
+        
+        // CASO 1: Actualización de nombre (desde pestaña "Editar Perfil")
+        if (isset($post['nombre']) && empty($post['current_password'])) {
+            // Solo actualizar nombre
+            if (empty($post['nombre'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'El nombre es requerido.');
+            }
+            
+            $updateData['nombre'] = $post['nombre'];
         }
         
-        // Preparar datos para actualizar
-        $updateData = ['nombre' => $post['nombre']];
-        
-        // Si se proporciona nueva contraseña, validarla y agregarla
-        if (!empty($post['new_password'])) {
+        // CASO 2: Cambio de contraseña (desde pestaña "Cambiar Contraseña")
+        if (!empty($post['current_password'])) {
+            // Verificar que se proporcione la contraseña actual
+            if (empty($post['current_password'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Debes proporcionar tu contraseña actual.');
+            }
+            
+            // Verificar que la contraseña actual sea correcta
+            $user = $this->usuarioModel->find($user_id);
+            if (!password_verify($post['current_password'], $user['password'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'La contraseña actual es incorrecta.');
+            }
+            
+            // Validar nueva contraseña
+            if (empty($post['new_password'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'La nueva contraseña es requerida.');
+            }
+            
             if ($post['new_password'] !== $post['confirm_password']) {
                 return redirect()->back()
                     ->withInput()
@@ -453,16 +480,32 @@ class AuthController extends BaseController
             }
             
             $updateData['password'] = $post['new_password'];
+            
+            // También mantener el nombre si viene
+            if (!empty($post['nombre'])) {
+                $updateData['nombre'] = $post['nombre'];
+            }
+        }
+        
+        // Si no hay nada que actualizar
+        if (empty($updateData)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'No hay datos para actualizar.');
         }
         
         // Actualizar usuario
         if ($this->usuarioModel->update($user_id, $updateData)) {
             // Actualizar nombre en sesión si cambió
-            if ($post['nombre'] !== session()->get('user_name')) {
-                session()->set('user_name', $post['nombre']);
+            if (isset($updateData['nombre']) && $updateData['nombre'] !== session()->get('user_name')) {
+                session()->set('user_name', $updateData['nombre']);
             }
             
-            session()->setFlashdata('success', 'Perfil actualizado exitosamente.');
+            $message = isset($updateData['password']) 
+                ? 'Contraseña actualizada exitosamente.' 
+                : 'Perfil actualizado exitosamente.';
+                
+            session()->setFlashdata('success', $message);
             return redirect()->to(url_to('profile'));
         } else {
             return redirect()->back()

@@ -25,16 +25,16 @@ class UsuarioModel extends Model
         'email', 
         'password', 
         'rol',
-        'reset_token',      // Token para recuperación
-        'reset_expira',     // Expiración del token
-        'activo'           // Estado del usuario
+        'reset_token',
+        'reset_expira',
+        'activo'
     ];
 
-    // Reglas de validación
+    // Reglas de validación - SIMPLIFICADAS (sin placeholder {id})
     protected $validationRules = [
         'nombre'   => 'required|min_length[3]|max_length[100]',
-        'email'    => 'required|valid_email|is_unique[usuarios.email,id,{id}]',
-        'password' => 'permit_empty|min_length[6]', // permit_empty para ediciones
+        'email'    => 'required|valid_email',
+        'password' => 'permit_empty|min_length[6]',
         'rol'      => 'required|in_list[admin,vendedor]'
     ];
 
@@ -54,17 +54,12 @@ class UsuarioModel extends Model
 
     /**
      * Hash de contraseña antes de insertar o actualizar
-     * 
-     * @param array $data Datos del usuario
-     * @return array Datos con contraseña hasheada (si se proporcionó)
      */
     protected function hashPassword(array $data)
     {
-        // Solo hashear si el campo password está presente y no está vacío
         if (isset($data['data']['password']) && !empty($data['data']['password'])) {
             $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_DEFAULT);
         } else {
-            // Si no se envía contraseña, mantener la actual (eliminar del array)
             unset($data['data']['password']);
         }
         
@@ -72,10 +67,22 @@ class UsuarioModel extends Model
     }
 
     /**
+     * Validar email único (excepto para el ID actual)
+     */
+    public function isUniqueEmail($email, $id = null)
+    {
+        $builder = $this->builder();
+        $builder->where('email', $email);
+        
+        if ($id) {
+            $builder->where('id !=', $id);
+        }
+        
+        return $builder->countAllResults() === 0;
+    }
+
+    /**
      * Buscar usuario por email
-     * 
-     * @param string $email Email a buscar
-     * @return array|null Datos del usuario o null si no existe
      */
     public function findByEmail($email)
     {
@@ -83,26 +90,16 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Cambiar contraseña (para recuperación)
-     * Este método evita los callbacks para control manual del hash
-     * 
-     * @param int $id ID del usuario
-     * @param string $password Nueva contraseña
-     * @return bool True si se actualizó, False si no
+     * Cambiar contraseña
      */
     public function changePassword($id, $password)
     {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        
         return $this->update($id, ['password' => $hashedPassword]);
     }
 
     /**
      * Verificar contraseña
-     * 
-     * @param string $password Contraseña en texto plano
-     * @param string $hashedPassword Contraseña hasheada
-     * @return bool True si coinciden, False si no
      */
     public function verifyPassword($password, $hashedPassword)
     {
@@ -110,15 +107,12 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Crear token de recuperación de contraseña
-     * 
-     * @param string $email Email del usuario
-     * @return string Token generado
+     * Crear token de recuperación
      */
     public function crearTokenReset($email)
     {
-        $token = bin2hex(random_bytes(32)); // Token seguro de 64 caracteres
-        $expira = date('Y-m-d H:i:s', strtotime('+1 hour')); // Expira en 1 hora
+        $token = bin2hex(random_bytes(32));
+        $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
         
         $this->set([
             'reset_token' => $token,
@@ -130,9 +124,6 @@ class UsuarioModel extends Model
 
     /**
      * Validar token de recuperación
-     * 
-     * @param string $token Token a validar
-     * @return array|null Datos del usuario o null si el token es inválido
      */
     public function validarTokenReset($token)
     {
@@ -142,10 +133,7 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Limpiar token de recuperación después de usarlo
-     * 
-     * @param int $id ID del usuario
-     * @return bool True si se actualizó, False si no
+     * Limpiar token
      */
     public function limpiarTokenReset($id)
     {
@@ -156,10 +144,7 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Obtener todos los usuarios con un rol específico
-     * 
-     * @param string $role Rol a filtrar
-     * @return array Lista de usuarios
+     * Obtener por rol
      */
     public function getByRole($role)
     {
@@ -167,39 +152,28 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Obtener estadísticas de usuarios
-     * 
-     * @return array Estadísticas
+     * Obtener estadísticas
      */
     public function getStats()
     {
-        $stats = [
+        return [
             'total' => $this->countAll(),
             'admins' => $this->where('rol', 'admin')->countAllResults(),
             'vendedores' => $this->where('rol', 'vendedor')->countAllResults(),
             'activos' => $this->where('activo', 1)->countAllResults(),
             'inactivos' => $this->where('activo', 0)->countAllResults()
         ];
-        
-        return $stats;
     }
 
     /**
-     * Validar si un usuario puede ser eliminado
-     * (No permitir eliminar el último administrador)
-     * 
-     * @param int $id ID del usuario
-     * @return bool True si se puede eliminar, False si no
+     * Validar si se puede eliminar
      */
     public function canDelete($id)
     {
         $user = $this->find($id);
         
-        if (!$user) {
-            return false;
-        }
+        if (!$user) return false;
         
-        // Si es administrador, verificar que no sea el único
         if ($user['rol'] === 'admin') {
             $adminCount = $this->where('rol', 'admin')->countAllResults();
             return $adminCount > 1;
@@ -209,9 +183,7 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Obtener vendedores para dropdown/select
-     * 
-     * @return array Opciones para dropdown
+     * Obtener vendedores para dropdown
      */
     public function getVendedoresForDropdown()
     {
@@ -230,26 +202,16 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Actualizar perfil de usuario (sin cambiar rol)
-     * 
-     * @param int $id ID del usuario
-     * @param array $data Datos a actualizar
-     * @return bool True si se actualizó, False si no
+     * Actualizar perfil
      */
     public function updateProfile($id, $data)
     {
-        // Asegurarse de no cambiar el rol desde esta función
         unset($data['rol']);
-        
         return $this->update($id, $data);
     }
 
     /**
-     * Buscar usuarios con paginación
-     * 
-     * @param int $perPage Usuarios por página
-     * @param string|null $search Término de búsqueda
-     * @return array Resultados y paginador
+     * Buscar con paginación
      */
     public function getPaginated($perPage = 10, $search = null)
     {
@@ -269,11 +231,7 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Activar/desactivar usuario
-     * 
-     * @param int $id ID del usuario
-     * @param int $activo Estado (1 = activo, 0 = inactivo)
-     * @return bool True si se actualizó, False si no
+     * Activar/desactivar
      */
     public function setActivo($id, $activo = 1)
     {
@@ -281,9 +239,7 @@ class UsuarioModel extends Model
     }
 
     /**
-     * Obtener usuarios activos
-     * 
-     * @return array Usuarios activos
+     * Obtener activos
      */
     public function getActivos()
     {
