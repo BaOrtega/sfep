@@ -482,7 +482,7 @@
                 <div class="stat-icon text-success">
                     <i class="fas fa-check-circle"></i>
                 </div>
-                <div class="stat-number text-success"><?= $facturasPendientes ?? '0' ?></div>
+                <div class="stat-number text-success"><?= $facturasPagadas ?? '0' ?></div>
                 <div class="stat-title">Pagadas</div>
             </div>
             
