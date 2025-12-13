@@ -352,6 +352,15 @@
                     </div>
                 <?php endif; ?>
 
+                <!-- Alertas de Error General -->
+                <?php if (session()->getFlashdata('error')): ?>
+                    <div class="alert alert-danger alert-custom alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <?= session()->getFlashdata('error') ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
                 <form action="<?= url_to('clientes_save') ?>" method="post" id="clienteForm">
                     <?= csrf_field() ?>
                     
@@ -540,5 +549,178 @@
             formContainer.style.animationDelay = '0.1s';
         });
     </script>
+
+    <script>
+// Validación en tiempo real del NIT
+let validandoNit = false;
+
+document.getElementById('nit').addEventListener('blur', function() {
+    if (validandoNit) return;
+    
+    const nitInput = this;
+    const nit = nitInput.value.trim();
+    const idInput = document.querySelector('input[name="id"]');
+    const id = idInput ? idInput.value : '';
+    
+    // Validar longitud mínima
+    if (nit.length < 3) {
+        return;
+    }
+    
+    validandoNit = true;
+    nitInput.classList.add('is-validating');
+    
+    // Crear FormData
+    const formData = new FormData();
+    formData.append('nit', nit);
+    if (id) {
+        formData.append('id', id);
+    }
+    
+    fetch('<?= site_url('clientes/verificar-nit') ?>', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Limpiar estados anteriores
+        nitInput.classList.remove('is-valid', 'is-invalid', 'is-validating');
+        
+        if (data.valido) {
+            nitInput.classList.add('is-valid');
+            // Remover mensaje de error si existe
+            const errorElement = nitInput.nextElementSibling;
+            if (errorElement && errorElement.classList.contains('invalid-feedback')) {
+                errorElement.remove();
+            }
+        } else {
+            nitInput.classList.add('is-invalid');
+            
+            // Agregar o actualizar mensaje de error
+            let errorElement = nitInput.nextElementSibling;
+            if (!errorElement || !errorElement.classList.contains('invalid-feedback')) {
+                errorElement = document.createElement('div');
+                errorElement.className = 'invalid-feedback';
+                nitInput.parentNode.insertBefore(errorElement, nitInput.nextSibling);
+            }
+            errorElement.textContent = data.mensaje || 'NIT no válido';
+        }
+    })
+    .catch(error => {
+        console.error('Error verificando NIT:', error);
+        nitInput.classList.remove('is-validating');
+    })
+    .finally(() => {
+        validandoNit = false;
+    });
+});
+
+// Limpiar validación al escribir
+document.getElementById('nit').addEventListener('input', function() {
+    this.classList.remove('is-valid', 'is-invalid');
+    const errorElement = this.nextElementSibling;
+    if (errorElement && errorElement.classList.contains('invalid-feedback')) {
+        errorElement.remove();
+    }
+});
+
+// Validación del formulario antes de enviar
+document.getElementById('clienteForm').addEventListener('submit', function(e) {
+    const nombre = document.getElementById('nombre').value.trim();
+    const nit = document.getElementById('nit').value.trim();
+    
+    // Validaciones básicas
+    if (!nombre) {
+        e.preventDefault();
+        mostrarAlerta('Por favor ingrese el nombre del cliente', 'error');
+        document.getElementById('nombre').focus();
+        return false;
+    }
+    
+    if (!nit) {
+        e.preventDefault();
+        mostrarAlerta('Por favor ingrese el NIT/Cédula del cliente', 'error');
+        document.getElementById('nit').focus();
+        return false;
+    }
+    
+    // Validar longitud del NIT
+    if (nit.length < 3) {
+        e.preventDefault();
+        mostrarAlerta('El NIT/Cédula debe tener al menos 3 caracteres', 'error');
+        document.getElementById('nit').focus();
+        return false;
+    }
+    
+    // Si el NIT está marcado como inválido, prevenir envío
+    if (document.getElementById('nit').classList.contains('is-invalid')) {
+        e.preventDefault();
+        mostrarAlerta('El NIT/Cédula ingresado ya está registrado. Por favor, use un número diferente.', 'error');
+        document.getElementById('nit').focus();
+        return false;
+    }
+});
+
+// Función para mostrar alertas
+function mostrarAlerta(mensaje, tipo = 'info') {
+    // Crear elemento de alerta
+    const alerta = document.createElement('div');
+    alerta.className = `alert alert-${tipo === 'error' ? 'danger' : 'info'} alert-dismissible fade show`;
+    alerta.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+    `;
+    alerta.innerHTML = `
+        <i class="fas fa-${tipo === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    // Agregar al documento
+    document.body.appendChild(alerta);
+    
+    // Auto-eliminar después de 5 segundos
+    setTimeout(() => {
+        if (alerta.parentNode) {
+            alerta.remove();
+        }
+    }, 5000);
+}
+
+// Estilos adicionales
+const style = document.createElement('style');
+style.textContent = `
+    .is-validating {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%231a5fb4' class='bi bi-hourglass' viewBox='0 0 16 16'%3E%3Cpath d='M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 0 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702s.18.149.5.149.5-.15.5-.15v-.7c0-.701.478-1.236 1.011-1.492A3.5 3.5 0 0 0 11.5 3V2z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px 16px;
+        padding-right: 35px;
+    }
+    
+    .is-valid {
+        border-color: #198754 !important;
+        background-color: #f8fff9;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545 !important;
+        background-color: #fff8f8;
+    }
+`;
+document.head.appendChild(style);
+</script>
+
 </body>
 </html>

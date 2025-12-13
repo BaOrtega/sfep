@@ -64,6 +64,7 @@ $routes->group('clientes', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'ClienteController::edit/$1', ['as' => 'clientes_edit']);
     $routes->get('delete/(:num)', 'ClienteController::delete/$1', ['as' => 'clientes_delete']);
     $routes->get('cantidadClientes', 'ClienteController::cantidadClientes');
+    $routes->post('clientes/verificar-nit', 'ClienteController::verificarNit');
 });
 
 // ============================================================
