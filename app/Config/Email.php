@@ -1,6 +1,4 @@
-<?php
-
-namespace Config;
+<?php namespace Config;
 
 use CodeIgniter\Config\BaseConfig;
 
@@ -30,12 +28,12 @@ class Email extends BaseConfig
     public string $mailPath = '/usr/sbin/sendmail';
 
     /**
-     * CONFIGURACIÓN MAILTRAP CON TUS DATOS
+     * CONFIGURACIÓN MAILTRAP CON TUS NUEVAS CREDENCIALES
      */
     public string $SMTPHost = 'sandbox.smtp.mailtrap.io';
-    public string $SMTPUser = '19721b6f27fec8';  // Tu usuario
-    public string $SMTPPass = 'e129';            // Tu contraseña
-    public int $SMTPPort = 587;                   // Puerto recomendado
+    public string $SMTPUser = '4af29935e8273f';  // NUEVO usuario
+    public string $SMTPPass = 'e36af29118aeb7';            // NUEVA contraseña
+    public int $SMTPPort = 2525;                   // Puerto recomendado
     public int $SMTPTimeout = 30;                 // Aumentado para pruebas
 
     /**

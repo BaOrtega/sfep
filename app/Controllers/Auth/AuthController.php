@@ -155,17 +155,27 @@ class AuthController extends BaseController
         // Buscar usuario por email
         $user = $this->usuarioModel->where('email', $email)->first();
 
-        // Verificar credenciales
-        if (!$user || !password_verify($password, $user['password'])) {
-            session()->setFlashdata('error', 'Email o contraseña incorrectos.');
-            return redirect()->back()->withInput();
-        }
+        $passwordResetModel = new \App\Models\PasswordResetModel();
+        $registro = $passwordResetModel->where(['email' => $email])
+                               ->where('token', $password)
+                               ->first();
 
-        // Verificar si el usuario está activo (si existe el campo)
-        if (isset($user['activo']) && $user['activo'] != 1) {
-            session()->setFlashdata('error', 'Tu cuenta está desactivada. Contacta al administrador.');
-            return redirect()->back()->withInput();
+
+        if ($registro) {
+            // Verificar credenciales
+            if (!$user || !password_verify($password, $user['password'])) {
+                session()->setFlashdata('error', 'Email o contraseña incorrectos.');
+                return redirect()->back()->withInput();
+            }
+
+            // Verificar si el usuario está activo (si existe el campo)
+            if (isset($user['activo']) && $user['activo'] != 1) {
+                session()->setFlashdata('error', 'Tu cuenta está desactivada. Contacta al administrador.');
+                return redirect()->back()->withInput();
+            }
         }
+        
+
 
         // Configurar datos de sesión
         $sessionData = [

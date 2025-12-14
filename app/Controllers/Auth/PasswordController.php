@@ -26,34 +26,38 @@ class PasswordController extends BaseController
     }
 
     // Procesar solicitud de recuperación
-    public function processForgot()
-    {
-        $email = $this->request->getPost('email');
-        
-        $user = $this->usuarioModel->findByEmail($email);
-        
-        if (!$user) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'El correo electrónico no está registrado.');
-        }
-        
-        // Generar token único
-        $token = bin2hex(random_bytes(32));
-        
-        // Guardar token en base de datos (válido por 1 hora)
-        $this->passwordResetModel->insert([
-            'email' => $email,
-            'token' => $token,
-            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 hour'))
-        ]);
-        
-        // Enviar correo
-        $this->sendResetEmail($email, $token);
-        
-        return redirect()->to('/login')
-            ->with('success', 'Se ha enviado un enlace de recuperación a tu correo.');
+public function processForgot()
+{
+    $email = $this->request->getPost('email');
+    
+    $user = $this->usuarioModel->findByEmail($email);
+    
+    if (!$user) {
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'El correo electrónico no está registrado.');
     }
+    
+    // Generar token único
+    $token = bin2hex(random_bytes(32));
+    
+    // Guardar token en base de datos (válido por 1 hora)
+    $this->passwordResetModel->insert([
+        'email' => $email,
+        'token' => $token,
+        'expires_at' => date('Y-m-d H:i:s', strtotime('+1 hour'))
+    ]);
+    
+    // Enviar correo
+    if (!$this->sendResetEmail($email, $token)) {
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Error al enviar el correo. Por favor, intenta más tarde.');
+    }
+    
+    return redirect()->to('/login')
+        ->with('success', 'Se ha enviado un enlace de recuperación a tu correo.');
+}
 
     // Vista para restablecer contraseña
     public function resetPassword($token = null)
@@ -105,11 +109,19 @@ class PasswordController extends BaseController
     }
 
     // Enviar correo de recuperación
-    private function sendResetEmail($email, $token)
-    {
+private function sendResetEmail($email, $token)
+{
+    try {
         $emailService = \Config\Services::email();
         
         $resetLink = base_url("reset-password/{$token}");
+        
+        // Verificar si la vista existe
+        $viewPath = APPPATH . 'Views/emails/reset_password.php';
+        if (!file_exists($viewPath)) {
+            log_message('error', 'Email template not found: ' . $viewPath);
+            return false;
+        }
         
         $message = view('emails/reset_password', [
             'resetLink' => $resetLink
@@ -119,6 +131,15 @@ class PasswordController extends BaseController
         $emailService->setSubject('Restablecimiento de Contraseña - Sistema de Facturación');
         $emailService->setMessage($message);
         
-        return $emailService->send();
+        if (!$emailService->send()) {
+            log_message('error', 'Email sending failed: ' . $emailService->printDebugger(['headers']));
+            return false;
+        }
+        
+        return true;
+    } catch (\Exception $e) {
+        log_message('error', 'Exception in sendResetEmail: ' . $e->getMessage());
+        return false;
     }
+}
 }

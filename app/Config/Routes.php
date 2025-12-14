@@ -156,7 +156,10 @@ $routes->POST('attemptRegister', 'Auth\AuthController::attemptRegister', ['as' =
 
 $routes->get('test-mailtrap', 'TestMailtrapSimple::index');
 $routes->get('test-alt', 'TestMailtrapAlt::index');
-
+$routes->get('verify-config', 'VerifyConfig::index');
+$routes->get('test-ports', 'TestAllPorts::index');
+$routes->get('check-php', 'CheckPHP::index');
+$routes->get('test-new', 'TestNewCredentials::index');
 // ============================================================
 // RUTAS DE API (Descomentar si se necesitan)
 // ============================================================
