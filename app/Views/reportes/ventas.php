@@ -371,6 +371,7 @@
         <div class="filter-card">
             <h4><i class="fas fa-filter me-2"></i>Filtros de Búsqueda</h4>
             <form method="post" action="<?= url_to('reportes_ventas') ?>">
+                <?= csrf_field() ?>
                 <div class="row g-3">
                     <div class="col-md-3">
                         <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
@@ -434,7 +435,7 @@
                 <div class="stat-icon text-warning">
                     <i class="fas fa-chart-bar"></i>
                 </div>
-                <div class="stat-number text-warning">$<?= number_format($total_ventas / $total_facturas, 0, ',', '.') ?></div>
+                <div class="stat-number text-warning">$<?= number_format($promedio_venta ?? 0, 0, ',', '.') ?></div>
                 <div class="stat-title">Ticket Promedio</div>
                 <small class="text-muted d-block mt-2">Por factura</small>
             </div>
@@ -469,10 +470,11 @@
                             </tr>
                         </thead>
                         <tbody>
+                            
                             <?php foreach ($facturas as $factura): ?>
                                 <tr>
                                     <td class="fw-bold">#<?= esc($factura['id']) ?></td>
-                                    <td><?= esc($factura['cliente_nombre']) ?></td>
+                                    <td><?= esc($factura['cliente_nombre'] ?? 'Cliente no encontrado') ?></td>
                                     <td><?= date('d/m/Y', strtotime($factura['fecha_emision'])) ?></td>
                                     <td class="text-end">$ <?= number_format(esc($factura['subtotal']), 2, ',', '.') ?></td>
                                     <td class="text-end">$ <?= number_format(esc($factura['total_impuestos']), 2, ',', '.') ?></td>
@@ -515,6 +517,7 @@
         </div>
         <?php endif; ?>
     </div>
+
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -12,33 +12,80 @@ class ReporteModel extends Model
     }
 
     /**
-     * REPORTE DE VENTAS POR PERIODO
+     * REPORTE DE VENTAS POR PERIODO - VERSIÓN CORREGIDA
      */
+    
     public function getVentasPorPeriodo($fechaInicio = null, $fechaFin = null, $estado = null)
-    {
-        $builder = $this->db->table('facturas f');
-        $builder->select('
-            f.*,
-            c.nombre as cliente_nombre,
-            c.nit as cliente_nit,
-            u.nombre as usuario_creador
-        ');
-        $builder->join('clientes c', 'c.id = f.cliente_id');
-        $builder->join('usuarios u', 'u.id = f.usuario_id');
+{
+    $builder = $this->db->table('facturas f');
+    $builder->select('
+        f.id,
+        f.fecha_emision,
+        f.fecha_vencimiento,
+        f.subtotal,
+        f.total_impuestos,
+        f.total_factura,
+        f.estado,
+        f.moneda,
+        c.nombre as cliente_nombre,
+        c.nit as cliente_nit,
+        u.nombre as usuario_creador
+    ');
+    $builder->join('clientes c', 'c.id = f.cliente_id', 'left');
+    $builder->join('usuarios u', 'u.id = f.usuario_id', 'left');
 
-        // Aplicar filtros
-        if ($fechaInicio) {
-            $builder->where('f.fecha_emision >=', $fechaInicio);
-        }
-        if ($fechaFin) {
-            $builder->where('f.fecha_emision <=', $fechaFin);
-        }
-        if ($estado && $estado !== 'TODOS') {
-            $builder->where('f.estado', $estado);
-        }
-
-        return $builder->orderBy('f.fecha_emision', 'DESC')->get()->getResultArray();
+    // Aplicar filtros
+    if ($fechaInicio) {
+        $builder->where('DATE(f.fecha_emision) >=', $fechaInicio);
     }
+    if ($fechaFin) {
+        $builder->where('DATE(f.fecha_emision) <=', $fechaFin);
+    }
+    // CORREGIDO: Solo filtrar por estado si no es 'TODOS'
+    if ($estado && $estado !== 'TODOS') {
+        $builder->where('f.estado', $estado);
+    }
+
+    $builder->orderBy('f.fecha_emision', 'DESC');
+    
+    return $builder->get()->getResultArray();
+}
+
+public function getEstadisticasVentasPorPeriodo($inicio, $fin, $estado)
+{
+    $builder = $this->db->table('facturas f');
+    $builder->select('
+        COUNT(*) as total_facturas,
+        COALESCE(SUM(f.total_factura), 0) as total_ventas,
+        COALESCE(SUM(f.total_impuestos), 0) as total_impuestos,
+        COALESCE(AVG(f.total_factura), 0) as promedio_venta
+    ');
+    
+    // Aplicar filtros de fechas (USAR LA MISMA LÓGICA QUE getVentasPorPeriodo)
+    if ($inicio) {
+        $builder->where('f.fecha_emision >=', $inicio);
+    }
+    if ($fin) {
+        $builder->where('f.fecha_emision <=', $fin);
+    }
+    
+    // Aplicar filtro de estado si no es 'TODOS'
+    if ($estado !== 'TODOS') {
+        $builder->where('f.estado', $estado);
+    }
+
+    $result = $builder->get()->getRowArray();
+
+    // DEBUG: Verificar resultados
+    // log_message('debug', 'Estadísticas para ' . $inicio . ' a ' . $fin . ': ' . print_r($result, true));
+
+    return [
+        'total_facturas'  => $result['total_facturas'] ?? 0,
+        'total_ventas'    => $result['total_ventas'] ?? 0,
+        'total_impuestos' => $result['total_impuestos'] ?? 0,
+        'promedio_venta'  => $result['promedio_venta'] ?? 0,
+    ];
+}
 
     /**
      * KPI - TOTAL FACTURADO (SOLO FACTURAS PAGADAS)
@@ -50,7 +97,7 @@ class ReporteModel extends Model
         $builder->where('estado', 'PAGADA');
         
         $result = $builder->get()->getRow();
-        return $result ? $result->total_factura : 0;
+        return $result ? (float)$result->total_factura : 0;
     }
 
     /**
@@ -227,5 +274,48 @@ class ReporteModel extends Model
         $builder->orderBy('f.fecha_emision', 'DESC');
 
         return $builder->get()->getResultArray();
+    }
+
+    /**
+     * MÉTODO AUXILIAR: VALIDAR FECHA
+     */
+    private function esFechaValida($fecha)
+    {
+        $patron = '/^\d{4}-\d{2}-\d{2}$/';
+        if (preg_match($patron, $fecha)) {
+            $partes = explode('-', $fecha);
+            if (count($partes) === 3) {
+                list($anio, $mes, $dia) = $partes;
+                return checkdate($mes, $dia, $anio);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * MÉTODO AUXILIAR: DEPURAR CONSULTAS
+     */
+    public function debugQuery($fechaInicio = null, $fechaFin = null, $estado = null)
+    {
+        $builder = $this->db->table('facturas f');
+        $builder->select('COUNT(*) as total');
+        
+        if (!empty($fechaInicio) && $this->esFechaValida($fechaInicio)) {
+            $builder->where('DATE(f.fecha_emision) >=', $fechaInicio);
+        }
+        if (!empty($fechaFin) && $this->esFechaValida($fechaFin)) {
+            $builder->where('DATE(f.fecha_emision) <=', $fechaFin);
+        }
+        if (!empty($estado) && $estado !== 'TODOS') {
+            $builder->where('f.estado', $estado);
+        }
+        
+        $sql = $builder->getCompiledSelect();
+        $result = $builder->get()->getRowArray();
+        
+        return [
+            'sql' => $sql,
+            'total' => $result['total'] ?? 0
+        ];
     }
 }

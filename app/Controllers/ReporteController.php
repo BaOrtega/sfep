@@ -39,41 +39,51 @@ class ReporteController extends BaseController
         return $this->renderView('reportes/index', $data);
     }
 
-    // REPORTE DE VENTAS POR PERIODO
     public function ventasPorPeriodo()
-    {
-        $data['title'] = "Reporte de Ventas por Período";
+{
+    $data = [];
+    $data['title'] = 'Reporte de Ventas por Período';
 
-        if ($this->request->getMethod() === 'post') {
-            $fechaInicio = $this->request->getPost('fecha_inicio');
-            $fechaFin = $this->request->getPost('fecha_fin');
-            $estado = $this->request->getPost('estado');
-
-            $data['facturas'] = $this->reporteModel->getVentasPorPeriodo($fechaInicio, $fechaFin, $estado);
-            $data['filtros'] = [
-                'fecha_inicio' => $fechaInicio,
-                'fecha_fin' => $fechaFin,
-                'estado' => $estado
-            ];
-
-            $data['total_ventas'] = array_sum(array_column($data['facturas'], 'total_factura'));
-            $data['total_facturas'] = count($data['facturas']);
-            $data['total_impuestos'] = array_sum(array_column($data['facturas'], 'total_impuestos'));
-
-        } else {
-            $data['facturas'] = [];
-            $data['filtros'] = [
-                'fecha_inicio' => date('Y-m-01'),
-                'fecha_fin' => date('Y-m-t'),
-                'estado' => 'TODOS'
-            ];
-            $data['total_ventas'] = 0;
-            $data['total_facturas'] = 0;
-            $data['total_impuestos'] = 0;
+    // 1. Inicializar con valores por defecto (mes actual)
+    $fechaInicio = date('Y-m-01');
+    $fechaFin = date('Y-m-t');
+    $estado = 'TODOS';
+    
+    // 2. Si es POST, usar los datos del formulario
+    if ($this->request->getMethod() === 'POST') {
+        $fechaInicio = $this->request->getPost('fecha_inicio') ?: $fechaInicio;
+        $fechaFin = $this->request->getPost('fecha_fin') ?: $fechaFin;
+        $estado = $this->request->getPost('estado') ?: $estado;
+        
+        // 3. Validar que fecha inicio no sea mayor a fecha fin
+        if ($fechaInicio > $fechaFin) {
+            // Intercambiar si están invertidas
+            [$fechaInicio, $fechaFin] = [$fechaFin, $fechaInicio];
         }
-
-        return $this->renderView('reportes/ventas', $data);
     }
+    
+    // 4. Obtener datos del modelo
+    $data['facturas'] = $this->reporteModel
+        ->getVentasPorPeriodo($fechaInicio, $fechaFin, $estado);
+
+    $estadisticas = $this->reporteModel
+        ->getEstadisticasVentasPorPeriodo($fechaInicio, $fechaFin, $estado);
+
+    // 5. Preparar datos para la vista
+    $data['filtros'] = [
+        'fecha_inicio' => $fechaInicio,
+        'fecha_fin'    => $fechaFin,
+        'estado'       => $estado
+    ];
+    
+    $data['total_ventas']    = $estadisticas['total_ventas'];
+    $data['total_facturas']  = $estadisticas['total_facturas'];
+    $data['total_impuestos'] = $estadisticas['total_impuestos'];
+    $data['promedio_venta']  = $estadisticas['promedio_venta'];
+
+    return view('reportes/ventas', $data);
+}
+
 
     // REPORTE DE CUENTAS POR COBRAR
     public function cuentasPorCobrar()
@@ -114,11 +124,17 @@ class ReporteController extends BaseController
         $estado = $this->request->getGet('estado');
 
         $data['facturas'] = $this->reporteModel->getVentasPorPeriodo($fechaInicio, $fechaFin, $estado);
-        $data['filtros'] = ['fecha_inicio' => $fechaInicio, 'fecha_fin' => $fechaFin, 'estado' => $estado];
+        $data['filtros'] = [
+            'fecha_inicio' => $fechaInicio, 
+            'fecha_fin' => $fechaFin, 
+            'estado' => $estado
+        ];
         $data['title'] = "Reporte de Ventas";
 
-        $data['total_ventas'] = array_sum(array_column($data['facturas'], 'total_factura'));
-        $data['total_facturas'] = count($data['facturas']);
+        // Obtener estadísticas con filtros
+        $estadisticas = $this->reporteModel->getEstadisticasVentasPorPeriodo($fechaInicio, $fechaFin, $estado);
+        $data['total_ventas'] = $estadisticas['total_ventas'];
+        $data['total_facturas'] = $estadisticas['total_facturas'];
 
         $html = view('reportes/export/ventas_pdf', $data);
 
@@ -131,4 +147,5 @@ class ReporteController extends BaseController
         $dompdf->stream($filename, ["Attachment" => false]);
         exit();
     }
+
 }

@@ -23,7 +23,7 @@ $routes->get('demo', 'Demo::index', ['as' => 'demo']);
 
 // Login y logout
 $routes->get('login', 'Auth\AuthController::login', ['as' => 'login']);
-$routes->post('attemptLogin', 'Auth\AuthController::attemptLogin', ['as' => 'attemptLogin']);
+$routes->POST('attemptLogin', 'Auth\AuthController::attemptLogin', ['as' => 'attemptLogin']);
 $routes->get('logout', 'Auth\AuthController::logout', ['as' => 'logout']);
 
 // ============================================================
@@ -31,11 +31,11 @@ $routes->get('logout', 'Auth\AuthController::logout', ['as' => 'logout']);
 // ============================================================
 
 $routes->get('forgot-password', 'Auth\AuthController::forgotPassword', ['as' => 'forgot_password']);
-$routes->post('forgot-password/process', 'Auth\AuthController::processForgotPassword', 
+$routes->POST('forgot-password/process', 'Auth\AuthController::processForgotPassword', 
     ['as' => 'process_forgot_password']);
 $routes->get('reset-password/(:any)', 'Auth\AuthController::resetPassword/$1', 
     ['as' => 'reset_password']);
-$routes->post('reset-password/process', 'Auth\AuthController::processResetPassword', 
+$routes->POST('reset-password/process', 'Auth\AuthController::processResetPassword', 
     ['as' => 'process_reset_password']);
 
 // ============================================================
@@ -49,7 +49,7 @@ $routes->get('dashboard', 'DashboardController::index',
 // Perfil de usuario - Accesible para todos los usuarios autenticados
 $routes->get('profile', 'Auth\AuthController::profile', 
     ['as' => 'profile', 'filter' => 'auth']);
-$routes->post('profile/update', 'Auth\AuthController::updateProfile', 
+$routes->POST('profile/update', 'Auth\AuthController::updateProfile', 
     ['as' => 'update_profile', 'filter' => 'auth']);
 
 // ============================================================
@@ -60,11 +60,11 @@ $routes->group('clientes', ['filter' => 'auth'], function($routes) {
     // Todas estas rutas requieren autenticación
     $routes->get('/', 'ClienteController::index', ['as' => 'clientes_index']);
     $routes->get('new', 'ClienteController::new', ['as' => 'clientes_new']);
-    $routes->post('save', 'ClienteController::save', ['as' => 'clientes_save']);
+    $routes->POST('save', 'ClienteController::save', ['as' => 'clientes_save']);
     $routes->get('edit/(:num)', 'ClienteController::edit/$1', ['as' => 'clientes_edit']);
     $routes->get('delete/(:num)', 'ClienteController::delete/$1', ['as' => 'clientes_delete']);
     $routes->get('cantidadClientes', 'ClienteController::cantidadClientes');
-    $routes->post('clientes/verificar-nit', 'ClienteController::verificarNit');
+    $routes->POST('clientes/verificar-nit', 'ClienteController::verificarNit');
 });
 
 // ============================================================
@@ -74,7 +74,7 @@ $routes->group('clientes', ['filter' => 'auth'], function($routes) {
 $routes->group('productos', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'ProductoController::index', ['as' => 'productos_index']);
     $routes->get('new', 'ProductoController::new', ['as' => 'productos_new']);
-    $routes->post('save', 'ProductoController::save', ['as' => 'productos_save']);
+    $routes->POST('save', 'ProductoController::save', ['as' => 'productos_save']);
     $routes->get('edit/(:num)', 'ProductoController::edit/$1', ['as' => 'productos_edit']);
     
     // Eliminar producto: solo administradores
@@ -90,7 +90,7 @@ $routes->group('productos', ['filter' => 'auth'], function($routes) {
 $routes->group('facturas', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'FacturaController::index', ['as' => 'facturas_index']);
     $routes->get('new', 'FacturaController::new', ['as' => 'facturas_new']);
-    $routes->post('save', 'FacturaController::save', ['as' => 'facturas_save']); 
+    $routes->POST('save', 'FacturaController::save', ['as' => 'facturas_save']); 
     $routes->get('view/(:num)', 'FacturaController::view/$1', ['as' => 'facturas_view']);
     
     // Pagar factura: ambos roles
@@ -109,16 +109,13 @@ $routes->get('facturas/anular/(:num)', 'FacturaController::anular/$1',
     ['as' => 'facturas_anular', 'filter' => 'admin']
 );
 
-// ============================================================
 // MÓDULO REPORTES (Exclusivo para Administradores)
-// ============================================================
-
 $routes->group('reportes', ['filter' => 'admin'], function($routes) {
     $routes->get('/', 'ReporteController::index', ['as' => 'reportes_index']);
     
-    // Reportes específicos
-    $routes->get('ventas', 'ReporteController::ventasPorPeriodo', ['as' => 'reportes_ventas']);
-    $routes->post('ventas', 'ReporteController::ventasPorPeriodo');
+    // Reportes específicos - SOLO UNA RUTA PARA GET/POST
+    $routes->match(['GET', 'POST'], 'ventas', 'ReporteController::ventasPorPeriodo', ['as' => 'reportes_ventas']);
+    
     $routes->get('exportar-ventas-pdf', 'ReporteController::exportarVentasPDF', 
         ['as' => 'exportar_ventas_pdf']
     );
@@ -141,7 +138,7 @@ $routes->group('reportes', ['filter' => 'admin'], function($routes) {
 $routes->group('usuarios', ['filter' => 'admin'], function($routes) {
     $routes->get('/', 'UsuarioController::index', ['as' => 'usuarios_index']);
     $routes->get('new', 'UsuarioController::new', ['as' => 'usuarios_new']);
-    $routes->post('save', 'UsuarioController::save', ['as' => 'usuarios_save']);
+    $routes->POST('save', 'UsuarioController::save', ['as' => 'usuarios_save']);
     $routes->get('edit/(:num)', 'UsuarioController::edit/$1', ['as' => 'usuarios_edit']);
     $routes->get('delete/(:num)', 'UsuarioController::delete/$1', ['as' => 'usuarios_delete']);
 });
@@ -151,10 +148,7 @@ $routes->group('usuarios', ['filter' => 'admin'], function($routes) {
 // ============================================================
 
 $routes->get('register', 'Auth\AuthController::register', ['as' => 'register', 'filter' => 'admin']);
-$routes->post('attemptRegister', 'Auth\AuthController::attemptRegister', ['as' => 'attemptRegister', 'filter' => 'admin']);
-
-    //$routes->get('register', 'Auth\AuthController::register', ['as' => 'register']);
-    //$routes->post('attemptRegister', 'Auth\AuthController::attemptRegister', ['as' => 'attemptRegister']);
+$routes->POST('attemptRegister', 'Auth\AuthController::attemptRegister', ['as' => 'attemptRegister', 'filter' => 'admin']);
 
 // ============================================================
 // RUTAS DE PRUEBA PARA MAILTRAP (Temporales)
